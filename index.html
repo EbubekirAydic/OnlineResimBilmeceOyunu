@@ -31,15 +31,14 @@
                 Lütfen isim yerini boş bırakmayınız
             </div>
         </div>
+        <p class="bilgi">Bir kullanıcı adı girin</p>
 
         <div class="container mt-5 text-white">
-            <h2 class="text-center">Profil Resmi Yükleme</h2>
-            
             <!-- File Input -->
             <div class="mb-3">
-                <label for="fileInput" class="form-label">Bir görsel seçin:</label>
                 <input class="form-control" type="file" id="fileInput" accept="image/*">
             </div>
+            <p class="bilgi">Bir görsel seçin</p>
     
             <!-- Önizleme Alanı -->
             <div class="preview-container">
@@ -71,36 +70,68 @@
     </div>
 
     <div id="GameMenu" class="container close">
-        <br/>
-        Mesaj:
-        <input type="text">
-        <ul id="messages">
-        </ul>
-
-    <div class="container d-flex justify-content-center align-items-center vh-100">
-        <div class="chat-box">
-            <div class="chat-header">
-                <i class="fas fa-comments"></i> Yayıncı Chati
-            </div>
-
-            <div id="chat-messages" class="chat-messages">
-                <!-- Mesajlar buraya eklenecek -->
-                <div class="message">
-                    <div class="user-icon">
-                        <i class="fas fa-user"></i>
+        <div class="container-fluid d-flex">
+            <!-- Sol Taraf: Puan Tablosu -->
+            <div class="scoreboard">
+                <div class="score-header">Puan Tablosu</div>
+                <div id="playerScores" class="score-list">
+                    <!-- Puanlar burada olacak -->
+                    <div class="player">
+                        <span class="player-name">Oyuncu 1</span>
+                        <span class="player-score">100</span>
                     </div>
-                    <div class="text">Merhaba! Yayına hoş geldiniz. 🎉</div>
+                    <div class="player">
+                        <span class="player-name">Oyuncu 2</span>
+                        <span class="player-score">80</span>
+                    </div>
                 </div>
             </div>
-
-            <div class="chat-input">
-                <input type="text" id="myMessage" placeholder="Mesajınızı yazın...">
-                <button onclick="SendMessage()" id="sendMessage">
-                    <i class="fas fa-paper-plane"></i>
-                </button>
+        
+            <!-- Sağ Taraf: Canvas ve Sohbet -->
+            <div class="right-panel">
+                <!-- Canvas (sağ üst köşe) -->
+                <div class="canvas-container">
+                    <canvas id="drawingCanvas" width="500" height="500"></canvas>
+                </div>
+        
+                <!-- Sohbet Alanı (sağ alt köşe) -->
+                <div class="chat-container">
+                    <div class="chat-box">
+                        <div class="chat-header">
+                            <i class="fas fa-comments"></i> Sohbet
+                        </div>
+        
+                        <div id="chat-messages" class="chat-messages">
+                            <!-- Sohbet mesajları burada olacak -->
+                        </div>
+        
+                        <div class="chat-input">
+                            <input type="text" id="myMessage" placeholder="Mesajınızı yazın...">
+                            <button onclick="SendMessage()" id="sendMessage">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="chat-box">
+                        <div class="chat-header">
+                            <i class="fas fa-comments"></i> Sohbet
+                        </div>
+        
+                        <div id="chat-messages" class="chat-messages">
+                            <!-- Sohbet mesajları burada olacak -->
+                        </div>
+        
+                        <div class="chat-input">
+                            <input type="text" id="myMessage" placeholder="Mesajınızı yazın...">
+                            <button onclick="SendMessage()" id="sendMessage">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
+        
     </div>
 
     <script src="https://js.pusher.com/7.0/pusher.min.js"></script>

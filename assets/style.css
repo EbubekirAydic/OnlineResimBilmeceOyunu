@@ -6,10 +6,9 @@ body {
     display: none;
 }
 
-@media (min-width: 768px) {
-    .container{
-        width: 50%;
-    }
+.bilgi{
+    text-align: left;
+    color: #767676;
 }
 
 #baslik {
@@ -43,94 +42,212 @@ body {
     border: 3px solid #fff; /* Resmin etrafında beyaz bir çerçeve */
 }
 
-.input-group-text {
-    cursor: pointer;
+
+
+
+
+
+
+/* Genel Konteyner */
+.container-fluid {
+    display: flex;
+    height: 100vh;
+    padding: 0;
+    margin: 0;
 }
 
+/* Sol Taraf: Puan Tablosu */
+.scoreboard {
+    width: 25%;
+    background-color: #f4f4f9;
+    padding: 20px;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+    border-right: 1px solid #ddd;
+    font-family: 'Arial', sans-serif;
+    position: relative;
+}
 
+.score-header {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-align: center;
+    color: #333;
+}
 
-.chat-box {
-    color: #f1eded;
-    width: 400px;
-    max-width: 100%;
-    height: 500px;
-    background: #1e1e1e;
-    border-radius: 10px;
+.score-list {
+    overflow-y: auto;
+    max-height: 85%;
+    padding-right: 10px;
+}
+
+.player {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding: 10px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s;
+}
+
+.player:hover {
+    transform: translateX(10px);
+}
+
+.player-name {
+    font-weight: bold;
+    color: #2d3e50;
+}
+
+.player-score {
+    font-weight: bold;
+    color: #007bff;
+}
+
+/* Sağ Panel (Canvas ve Sohbet) */
+.right-panel {
+    width: 75%;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
+    gap: 15px;
+    padding: 20px;
+}
+
+/* Canvas Alanı */
+.canvas-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f4f4f9;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    height: 60%;
+}
+
+#drawingCanvas {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+}
+
+/* Sohbet Alanı */
+.chat-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.chat-box {
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
 }
 
 .chat-header {
-    background: #252525;
-    padding: 10px 15px;
     font-size: 18px;
     font-weight: bold;
-    border-bottom: 2px solid #444;
+    margin-bottom: 15px;
+    color: #ffc107;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.chat-header i {
+    font-size: 20px;
 }
 
 .chat-messages {
-    flex: 1;
-    padding: 10px;
+    max-height: 200px;
     overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+    margin-bottom: 15px;
+    padding: 10px;
+    background-color: #222;
+    border-radius: 8px;
 }
 
 .message {
-    display: flex;
-    align-items: center;
-    gap: 10px;
+    margin-bottom: 10px;
 }
 
-.message .user-icon {
-    width: 35px;
-    height: 35px;
-    background: #444;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.user-icon {
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    background-color: #007bff;
     border-radius: 50%;
-    font-size: 16px;
+    text-align: center;
+    color: white;
+    line-height: 30px;
+    font-size: 14px;
+    margin-right: 10px;
 }
 
-.message .text {
-    color: #f1eded;
-    background: #333;
-    padding: 8px 12px;
-    border-radius: 5px;
-    max-width: 70%;
-    word-wrap: break-word;
+.text {
+    display: inline-block;
+    background-color: #333;
+    padding: 8px;
+    border-radius: 8px;
+    color: white;
+    font-size: 14px;
 }
 
 .chat-input {
     display: flex;
-    padding: 10px;
-    border-top: 2px solid #444;
-    background: #252525;
+    gap: 10px;
 }
 
 .chat-input input {
-    flex: 1;
-    padding: 8px;
+    width: 85%;
+    padding: 12px;
+    border-radius: 8px;
     border: none;
-    border-radius: 5px;
-    outline: none;
-    background: #333;
+    font-size: 16px;
+    background-color: #444;
     color: white;
 }
 
 .chat-input button {
-    margin-left: 10px;
-    padding: 8px 12px;
-    border: none;
-    background: #4CAF50;
+    background-color: #ffc107;
     color: white;
-    border-radius: 5px;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
     cursor: pointer;
+    font-size: 16px;
 }
 
 .chat-input button:hover {
-    background: #45a049;
+    background-color: #ffca28;
+}
+
+/* Responsive Tasarım */
+@media screen and (max-width: 768px) {
+    .container-fluid {
+        flex-direction: column;
+    }
+
+    .scoreboard {
+        width: 100%;
+        box-shadow: none;
+        margin-bottom: 15px;
+    }
+
+    .right-panel {
+        width: 100%;
+    }
+
+    .canvas-container {
+        height: 400px;
+    }
+
+    .chat-box {
+        padding: 12px;
+    }
 }

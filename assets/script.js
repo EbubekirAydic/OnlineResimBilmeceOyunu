@@ -156,3 +156,28 @@ function showWarning(message) {
   $('#myName, #Uyar').addClass("is-invalid");
   $('#UyarmaCümlesi').text(message);
 }
+
+// Canvas Ayarları
+const canvas = document.getElementById('drawingCanvas');
+const ctx = canvas.getContext('2d');
+
+// Basit Çizim Özelliği: Mouse ile çizim
+let drawing = false;
+
+canvas.addEventListener('mousedown', (e) => {
+    drawing = true;
+    ctx.beginPath();
+    ctx.moveTo(e.offsetX, e.offsetY);
+});
+
+canvas.addEventListener('mousemove', (e) => {
+    if (drawing) {
+        ctx.lineTo(e.offsetX, e.offsetY);
+        ctx.stroke();
+    }
+});
+
+canvas.addEventListener('mouseup', () => {
+    drawing = false;
+});
+
