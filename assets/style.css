@@ -1,5 +1,5 @@
 body {
-    background-color: #181818;
+    background-color: #003447;
 }
 
 .close{
@@ -44,6 +44,32 @@ body {
 
 
 
+/* Profil Resmi Gibi Görsel */
+.btn-tahminAndSohbet{
+    background-color: #222;
+    color: #f1eded;
+    padding: 10px 0px;
+    border: 0;
+    border-radius: 0;
+
+    font-family: 'Poppins', sans-serif; /* Güzel bir font */
+    font-weight: 700; /* Kalın font */
+    color: #f1eded; /* Daha iyi görünmesi için koyu gri renk */
+    text-transform: uppercase; /* Büyük harf yapar */
+    letter-spacing: 2px; /* Harfler arasında boşluk */
+
+    transition: background-color 0.2s;
+}
+
+.btn-tahminAndSohbet:hover{
+    background-color: #454545;
+}
+
+.secilen{
+    background-color: #606060;
+}
+
+
 
 
 
@@ -58,13 +84,14 @@ body {
 
 /* Sol Taraf: Puan Tablosu */
 .scoreboard {
-    width: 25%;
-    background-color: #f4f4f9;
-    padding: 20px;
+    width: 22%;
+    background-color: #222;
+    border-radius: 10px;
     box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
-    border-right: 1px solid #ddd;
     font-family: 'Arial', sans-serif;
     position: relative;
+    color: whitesmoke;
+    padding: 10px 10px;
 }
 
 .score-header {
@@ -77,24 +104,31 @@ body {
 
 .score-list {
     overflow-y: auto;
-    max-height: 85%;
-    padding-right: 10px;
+}
+
+.playerPuan {
+    display: inline-block;
+    background-color: #333;
+    padding: 8px;
+    border-radius: 8px;
+    color: white;
+    font-size: 14px;
+    width: 100%;
 }
 
 .player {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 15px;
-    padding: 10px;
-    background-color: #fff;
+    padding: 10px 5px;
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s;
+    width: 100%;
+    transition: background-color 0.3s;
 }
 
 .player:hover {
-    transform: translateX(10px);
+    background-color: #313030;
 }
 
 .player-name {
@@ -113,7 +147,6 @@ body {
     display: flex;
     flex-direction: column;
     gap: 15px;
-    padding: 20px;
 }
 
 /* Canvas Alanı */
@@ -137,22 +170,26 @@ body {
 /* Sohbet Alanı */
 .chat-container {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     gap: 10px;
+    height: 100%;
 }
 
 .chat-box {
     background-color: rgba(0, 0, 0, 0.7);
     color: white;
     padding: 15px;
+    padding-top: 10px;
+    padding-bottom: 0px;
     border-radius: 10px;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+    height: 100%;
 }
 
 .chat-header {
-    font-size: 18px;
+    font-size: 15px;
     font-weight: bold;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
     color: #ffc107;
     display: flex;
     justify-content: space-between;
@@ -164,29 +201,54 @@ body {
 }
 
 .chat-messages {
-    max-height: 200px;
+    height: 23vh;
     overflow-y: auto;
-    margin-bottom: 15px;
+    margin-bottom: 5px;
     padding: 10px;
     background-color: #222;
     border-radius: 8px;
 }
 
+/* Scrollbar Genel Ayarlar */
+.chat-messages::-webkit-scrollbar {
+    width: 6px; /* Kaydırma çubuğu genişliği */
+}
+
+/* Scrollbar Track (Arka plan) */
+.chat-messages::-webkit-scrollbar-track {
+    background: #2e2e2e; /* Kaydırma arkaplan rengi */
+    border-radius: 10px;
+}
+
+/* Scrollbar Thumb (Kaydırma çubuğu) */
+.chat-messages::-webkit-scrollbar-thumb {
+    background: #777; /* Kaydırma çubuğu rengi */
+    border-radius: 10px;
+}
+
+/* Scrollbar üzerine gelince renk değişimi */
+.chat-messages::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
 .message {
-    margin-bottom: 10px;
+    margin-bottom: 5px;
 }
 
 .user-icon {
     display: inline-block;
     width: 30px;
     height: 30px;
-    background-color: #007bff;
+    background-color: #4e5154;
     border-radius: 50%;
     text-align: center;
     color: white;
-    line-height: 30px;
     font-size: 14px;
     margin-right: 10px;
+}
+
+.user-icon-line{
+    line-height: 30px;
 }
 
 .text {
@@ -199,13 +261,15 @@ body {
 }
 
 .chat-input {
+    margin: 0;
     display: flex;
     gap: 10px;
 }
 
 .chat-input input {
-    width: 85%;
-    padding: 12px;
+    margin-top: 5px;
+    width: 92%;
+    padding: 0px 5px;
     border-radius: 8px;
     border: none;
     font-size: 16px;
@@ -214,9 +278,10 @@ body {
 }
 
 .chat-input button {
+    margin-top: 5px;
     background-color: #ffc107;
     color: white;
-    padding: 12px;
+    padding: 5px 12px;
     border: none;
     border-radius: 8px;
     cursor: pointer;
@@ -227,27 +292,43 @@ body {
     background-color: #ffca28;
 }
 
+@media screen and (max-height: 753px), screen and (max-width: 1329px) {
+    .jhg {
+        font-size: 28px;
+    }
+}
+
+.pcMenu{
+    display: flex !important;
+}
+.mobilMenu{
+    display: none !important;
+}
+
 /* Responsive Tasarım */
 @media screen and (max-width: 768px) {
-    .container-fluid {
-        flex-direction: column;
-    }
 
-    .scoreboard {
-        width: 100%;
-        box-shadow: none;
-        margin-bottom: 15px;
+    
+.scoreboard {
+    width: 100%;
+    background-color: #222;
+    border-radius: 10px;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+    font-family: 'Arial', sans-serif;
+    position: relative;
+    color: whitesmoke;
+    padding: 10px 10px;
+}
+
+    .pcMenu{
+        display: none !important;
+    }
+    .mobilMenu{
+        display: flex !important;
     }
 
     .right-panel {
         width: 100%;
     }
 
-    .canvas-container {
-        height: 400px;
-    }
-
-    .chat-box {
-        padding: 12px;
-    }
 }

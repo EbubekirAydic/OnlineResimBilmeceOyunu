@@ -24,7 +24,7 @@ channel.bind("client-message", (data) => {
   name = escapeOutput(data.name);
   img = escapeOutput(data.img);
       
-  $('#chat-messages').prepend(`
+  $('.mobile-chat-messages,.desktop-chat-messages').prepend(`
       <div class="message">
           <div class="user-icon">
               <i class="fas fa-user"></i>
@@ -34,9 +34,12 @@ channel.bind("client-message", (data) => {
 });
   
 $('#myMessage').keydown(function(event) {
+  if ($('#myMessage')) {
+    
       if (event.keyCode == 13) {
         SendMessage();
       }
+    }
 });
 
 function SendMessage(ServerName,IsServer,ServerMessage) {
@@ -51,7 +54,7 @@ function SendMessage(ServerName,IsServer,ServerMessage) {
   if (IsServer) {
     ServerName = escapeOutput($('#myName').val());
     ServerMessage = escapeOutput($('#myMessage').val());
-    $('#chat-messages').prepend(`
+    $('.mobile-chat-messages,.desktop-chat-messages').prepend(`
                   <div class="message">
                       <div class="user-icon">
                           <i class="fas fa-user"></i>
@@ -71,11 +74,13 @@ function SendMessage(ServerName,IsServer,ServerMessage) {
       img = null
     }
 
-    $('#chat-messages').prepend(`
+    if (!message == '') {
+      
+    $('.mobile-chat-messages,.desktop-chat-messages').prepend(`
                 <div class="message">
-                    <div class="user-icon">
+                    <div class="user-icon ${img ? `` : `user-icon-line`}">
                     ${img ? 
-                      `<img src="${img}" alt="User Image" style="width: 40px; height: 40px; border-radius: 50%;">` 
+                      `<img src="${img}" alt="User Image" style="width: 30px; height: 30px; border-radius: 50%;">` 
                       : 
                       `<i class="fas fa-user"></i>`
                     }
@@ -83,6 +88,7 @@ function SendMessage(ServerName,IsServer,ServerMessage) {
                     <div class="text"><b>${name}</b> : ${message}</div>
                 </div>
             `);
+    }
   };
 
   $('#myMessage').val('')
@@ -125,6 +131,11 @@ document.getElementById("fileInput").addEventListener("change", function(event) 
   }
 });
 
+
+
+
+
+
 function NameControl() {
   let PersonName = escapeOutput($('#myName').val().trim()); // Trim ile boşlukları temizledik
 
@@ -151,33 +162,126 @@ function NameControl() {
   GoToFunction('GameMenu');
 }
 
+
+
+
+
+
+
 // Uyarı mesajlarını göstermek için fonksiyon
 function showWarning(message) {
   $('#myName, #Uyar').addClass("is-invalid");
   $('#UyarmaCümlesi').text(message);
 }
 
-// Canvas Ayarları
-const canvas = document.getElementById('drawingCanvas');
-const ctx = canvas.getContext('2d');
 
-// Basit Çizim Özelliği: Mouse ile çizim
-let drawing = false;
 
-canvas.addEventListener('mousedown', (e) => {
-    drawing = true;
-    ctx.beginPath();
-    ctx.moveTo(e.offsetX, e.offsetY);
-});
+//tahmin ve sohbet değiştirmek için kod
 
-canvas.addEventListener('mousemove', (e) => {
-    if (drawing) {
-        ctx.lineTo(e.offsetX, e.offsetY);
-        ctx.stroke();
+function chatChange(chatName,button) {
+  const elements = document.getElementsByClassName("btn-tahminAndSohbet");
+
+  // Döngüyle elemanlara erişme
+  for (let i = 0; i < elements.length; i++) {
+        elements[i].classList.remove('secilen');
+  }
+
+  button.classList.add('secilen');
+
+  if (chatName == 'Tahmin') {
+    $('#chat-header').html(`<i class="fa-solid fa-reply"></i>Tahmin`);
+    
+    const elements = document.getElementsByClassName("chats");
+
+    // Döngüyle elemanlara erişme
+    for (let i = 0; i < elements.length; i++) {
+          elements[i].classList.add("close");
     }
-});
+    document.getElementById('send-messages').classList.remove("close");
 
-canvas.addEventListener('mouseup', () => {
-    drawing = false;
-});
+    if (document.getElementById('myMessage')) {
+    document.getElementById('myMessage').id = 'myMessageSend'
+    }
+  }
+  if (chatName == 'Sohbet') {
+    $('#chat-header').html(`<i class="fas fa-comments"></i>Sohbet`);
+    
+    const elements = document.getElementsByClassName("chats");
 
+    // Döngüyle elemanlara erişme
+    for (let i = 0; i < elements.length; i++) {
+          elements[i].classList.add("close");
+    }
+    document.getElementById('chat-messages').classList.remove("close");
+
+    if (document.getElementById('myMessageSend')) {
+    document.getElementById('myMessageSend').id = 'myMessage'
+    }
+  }
+}
+
+
+
+
+
+
+
+    // Canvasları ve Context'leri al
+    const canvas1 = document.getElementById("drawingCanvasPc");
+    const ctx1 = canvas1.getContext("2d");
+
+    const canvas2 = document.getElementById("drawingCanvasMobile");
+    const ctx2 = canvas2.getContext("2d");
+
+    let isDrawing = false;
+
+    function startDrawing(e, canvas, ctx, targetCtx) {
+        isDrawing = true;
+        draw(e, canvas, ctx, targetCtx);
+    }
+
+    function stopDrawing() {
+        isDrawing = false;
+        ctx1.beginPath();
+        ctx2.beginPath();
+    }
+
+    function draw(e, canvas, ctx, targetCtx) {
+        if (!isDrawing) return;
+
+        const rect = canvas.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        // Çizimi yapan canvas
+        ctx.lineWidth = 3;
+        ctx.lineCap = "round";
+        ctx.strokeStyle = "black";
+        ctx.lineTo(x, y);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+
+        // Diğer canvas'a da aynısını uygula
+        const targetRect = targetCtx.canvas.getBoundingClientRect();
+        const targetX = x * (targetCtx.canvas.width / canvas.width);
+        const targetY = y * (targetCtx.canvas.height / canvas.height);
+
+        targetCtx.lineWidth = 3;
+        targetCtx.lineCap = "round";
+        targetCtx.strokeStyle = "black";
+        targetCtx.lineTo(targetX, targetY);
+        targetCtx.stroke();
+        targetCtx.beginPath();
+        targetCtx.moveTo(targetX, targetY);
+    }
+
+    // Canvas 1 olayları
+    canvas1.addEventListener("mousedown", (e) => startDrawing(e, canvas1, ctx1, ctx2));
+    canvas1.addEventListener("mouseup", stopDrawing);
+    canvas1.addEventListener("mousemove", (e) => draw(e, canvas1, ctx1, ctx2));
+
+    // Canvas 2 olayları
+    canvas2.addEventListener("mousedown", (e) => startDrawing(e, canvas2, ctx2, ctx1));
+    canvas2.addEventListener("mouseup", stopDrawing);
+    canvas2.addEventListener("mousemove", (e) => draw(e, canvas2, ctx2, ctx1));
