@@ -144,7 +144,8 @@
 
         <div class="container-fluid pcMenu">
             <!-- Sol Taraf: Puan Tablosu -->
-            <div class="scoreboard">
+            <div id="scoreboardContainer">
+            <div id="scoreboard" class="scoreboard">
                 <div id="playerScores" class="score-list">
                     <!-- Puanlar burada olacak -->
                                 <div class="player">
@@ -169,6 +170,7 @@
                                 </div>
                 </div>
             </div>
+            </div>
         
             <!-- Sağ Taraf: Canvas ve Sohbet -->
             <div class="right-panel">
@@ -180,7 +182,22 @@
                 <!-- Sohbet Alanı (sağ alt köşe) -->
                 <div class="chat-container">
                     <div class="row m-0" style="width: 100%;">
-                        <div class="col ps-3 p-0">
+                        <div id="mobil-menu-chat-change" class="col-12 mb-2">
+                            <div class="row mx-1">
+                                <div class="col d-grid gap-2 p-0">
+                                    <button onclick="chatChange('tahmin-chat-box',this)" class="rounded-start btn-tahminAndSohbet secilen">Tahmin</button>
+                                </div>
+                                <div class="col d-grid gap-2 p-0">
+                                    <button onclick="chatChange('sohbet-chat-box',this)" class="rounded-end btn-tahminAndSohbet">Sohbet</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="chat-container" class="col">
+
+                        </div>
+
+                        <div id="tahmin-chat-box" class="col ps-3 p-0 chats">
                             <div class="chat-box">
                                 <div class="row h-100">
                                     <div class="col-12">
@@ -200,7 +217,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col p-0">
+                        <div id="sohbet-chat-box" class="col ps-3 p-0 chats">
                             <div class="chat-box">
                                 <div class="chat-header">
                                     <i class="fas fa-comments"></i> Sohbet
@@ -211,7 +228,7 @@
                                 </div>
                 
                                 <div class="chat-input">
-                                    <input type="text" class="myMessage" placeholder="Mesajınızı yazın...">
+                                    <input id="myMessage" type="text" class="myMessage" placeholder="Mesajınızı yazın...">
                                     <button onclick="SendMessage()" id="sendMessage">
                                         <i class="fas fa-paper-plane"></i>
                                     </button>

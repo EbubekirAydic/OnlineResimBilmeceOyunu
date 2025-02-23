@@ -179,45 +179,11 @@ function showWarning(message) {
 //tahmin ve sohbet değiştirmek için kod
 
 function chatChange(chatName,button) {
-  const elements = document.getElementsByClassName("btn-tahminAndSohbet");
-
-  // Döngüyle elemanlara erişme
-  for (let i = 0; i < elements.length; i++) {
-        elements[i].classList.remove('secilen');
-  }
-
+  $('.btn-tahminAndSohbet').removeClass('secilen');
   button.classList.add('secilen');
-
-  if (chatName == 'Tahmin') {
-    $('#chat-header').html(`<i class="fa-solid fa-reply"></i>Tahmin`);
-    
-    const elements = document.getElementsByClassName("chats");
-
-    // Döngüyle elemanlara erişme
-    for (let i = 0; i < elements.length; i++) {
-          elements[i].classList.add("close");
-    }
-    document.getElementById('send-messages').classList.remove("close");
-
-    if (document.getElementById('myMessage')) {
-    document.getElementById('myMessage').id = 'myMessageSend'
-    }
-  }
-  if (chatName == 'Sohbet') {
-    $('#chat-header').html(`<i class="fas fa-comments"></i>Sohbet`);
-    
-    const elements = document.getElementsByClassName("chats");
-
-    // Döngüyle elemanlara erişme
-    for (let i = 0; i < elements.length; i++) {
-          elements[i].classList.add("close");
-    }
-    document.getElementById('chat-messages').classList.remove("close");
-
-    if (document.getElementById('myMessageSend')) {
-    document.getElementById('myMessageSend').id = 'myMessage'
-    }
-  }
+  
+  $(`.chats`).css('display','none');
+  $(`#${chatName}`).css('display','block');
 }
 
 
@@ -285,3 +251,25 @@ function chatChange(chatName,button) {
     canvas2.addEventListener("mousedown", (e) => startDrawing(e, canvas2, ctx2, ctx1));
     canvas2.addEventListener("mouseup", stopDrawing);
     canvas2.addEventListener("mousemove", (e) => draw(e, canvas2, ctx2, ctx1));
+
+
+
+
+
+
+
+
+//EKRAN AYARLAMALARI
+function elemaniTasi() {
+  if (window.matchMedia("(max-width: 768px)").matches) {
+    $("#scoreboard").prependTo("#chat-container");
+  } else {
+    $("#scoreboard").prependTo("#scoreboardContainer"); // Eski yerine geri al
+  }
+}
+  
+// Sayfa yüklendiğinde kontrol et
+elemaniTasi();
+  
+// Ekran boyutu değiştiğinde tekrar kontrol et
+window.addEventListener("resize", elemaniTasi);

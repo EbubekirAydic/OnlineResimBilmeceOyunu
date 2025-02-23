@@ -292,6 +292,10 @@ body {
     background-color: #ffca28;
 }
 
+#mobil-menu-chat-change{
+    display: none;
+}
+
 @media screen and (max-height: 753px), screen and (max-width: 1329px) {
     .jhg {
         font-size: 28px;
@@ -305,27 +309,43 @@ body {
     display: none !important;
 }
 
+@media screen and (min-width: 768px){
+
+    #sohbet-chat-box{
+        display: block !important;
+    }
+    
+    #tahmin-chat-box{
+        display: block !important;
+    }
+    #chat-container{
+        display: none;
+    }
+}
+
 /* Responsive Tasarım */
 @media screen and (max-width: 768px) {
 
     
 .scoreboard {
     width: 100%;
-    background-color: #222;
-    border-radius: 10px;
-    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
-    font-family: 'Arial', sans-serif;
-    position: relative;
-    color: whitesmoke;
-    padding: 10px 10px;
 }
 
-    .pcMenu{
-        display: none !important;
-    }
-    .mobilMenu{
-        display: flex !important;
-    }
+#sohbet-chat-box{
+    display: none;
+}
+
+#chat-container{
+    display: block;
+}
+
+.chat-messages {
+    height: 17vh;
+}
+
+#mobil-menu-chat-change{
+    display: grid;
+}
 
     .right-panel {
         width: 100%;
