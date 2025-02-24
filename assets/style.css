@@ -1,5 +1,5 @@
 body {
-    background-color: #003447;
+    background-color: #f2f2f2;
 }
 
 .close{
@@ -9,6 +9,15 @@ body {
 .bilgi{
     text-align: left;
     color: #767676;
+}
+
+#OynaButton{
+    font-size: 3rem;
+    font-family: 'Poppins', sans-serif; /* Güzel bir font */
+    font-weight: 700; /* Kalın font */
+    color: #f1eded; /* Daha iyi görünmesi için koyu gri renk */
+    text-transform: uppercase; /* Büyük harf yapar */
+    letter-spacing: 2px; /* Harfler arasında boşluk */
 }
 
 #baslik {
@@ -21,9 +30,12 @@ body {
 
     font-family: 'Poppins', sans-serif; /* Güzel bir font */
     font-weight: 700; /* Kalın font */
-    color: #f1eded; /* Daha iyi görünmesi için koyu gri renk */
+    color: #2a2a2a; /* Daha iyi görünmesi için koyu gri renk */
     text-transform: uppercase; /* Büyük harf yapar */
     letter-spacing: 2px; /* Harfler arasında boşluk */
+}
+#baslik.dark-mode{
+    color: white;
 }
 
 .preview-container {
@@ -39,9 +51,24 @@ body {
     object-fit: cover; /* Görselin orantısını bozmadan kesilmesini sağlar */
     border-radius: 50%; /* Yuvarlak hale getirir */
     display: none; /* Başlangıçta gizli */
-    border: 3px solid #fff; /* Resmin etrafında beyaz bir çerçeve */
+    border: 3px solid #2a2a2a; /* Resmin etrafında beyaz bir çerçeve */
 }
 
+.preview-image.dark-mode{
+    border-color: #fff;
+}
+
+#myName.dark-mode{
+    background-color: #2a2a2a;
+    color: #fff;
+}
+#Uyar label::after{
+    background-color: transparent !important;
+}
+
+#Uyar label.dark-mode{
+    color: white;
+}
 
 
 /* Profil Resmi Gibi Görsel */
@@ -258,6 +285,8 @@ body {
     border-radius: 8px;
     color: white;
     font-size: 14px;
+    max-width: 80%;
+    word-wrap: break-word;
 }
 
 .chat-input {
@@ -318,8 +347,14 @@ body {
     #tahmin-chat-box{
         display: block !important;
     }
-    #chat-container{
+    #chat-container-scor{
         display: none;
+    }
+    #chat-container-chats{
+        width: 100%;
+    }
+    .chats{
+        width: 50%;
     }
 }
 
@@ -329,13 +364,19 @@ body {
     
 .scoreboard {
     width: 100%;
+    height: 100%;
 }
 
 #sohbet-chat-box{
     display: none;
+    width: 100%;
 }
 
-#chat-container{
+#tahmin-chat-box{
+    width: 100%;
+}
+
+#chat-container-scor{
     display: block;
 }
 
@@ -351,4 +392,32 @@ body {
         width: 100%;
     }
 
+}
+
+#theme-toggle {
+    background-color: #f0f0f0;
+    color: black;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  
+#theme-toggle:hover {
+    background-color: #ddd;
+}
+
+/* Gece Modu */
+body.dark-mode {
+    background-color: #262626;
+    color: white;
+  }
+  
+#theme-toggle.dark-mode {
+    background-color: #333;
+    color: white;
+}
+  
+#theme-toggle.dark-mode:hover {
+    background-color: #555;
 }

@@ -12,7 +12,11 @@
     <title>Online Resim Oyunu</title>
 </head>
 <body>
+    
+    
+
     <div class="container Menus">
+        <button id="theme-toggle">Gece Modu</button>
         <div class="row">
             <div class="col">
                 <h1 id="baslik">Resmi Tahmin Et</h1>
@@ -22,33 +26,34 @@
     <div id="AnaMenu" class="container d-flex justify-content-center align-items-center vh-100 Menus">
         <div class="container-sm text-center my-4">
             
-        <div id="NameInput" class="input-group mb-3">
+        <div id="NameInput" class="input-group mb-1">
             <div id="Uyar" class="form-floating">
               <input type="text" class="form-control rounded-end" id="myName" placeholder="Username">
-              <label for="floatingInputGroup1">Kullanıcı İsim</label>
+              <label>Kullanıcı İsim</label>
             </div>
             <div id="UyarmaCümlesi" class="invalid-feedback">
                 Lütfen isim yerini boş bırakmayınız
             </div>
         </div>
-        <p class="bilgi">Bir kullanıcı adı girin</p>
+        <p class="bilgi ms-1">Bir kullanıcı adı girin</p>
 
-        <div class="container mt-5 text-white">
+        <div class="container mt-5 p-0 text-white">
             <!-- File Input -->
-            <div class="mb-3">
+            <div class="mb-1">
                 <input class="form-control" type="file" id="fileInput" accept="image/*">
             </div>
-            <p class="bilgi">Bir görsel seçin</p>
+
+            <p class="bilgi m-0  ms-1">Bir görsel seçin</p>
     
             <!-- Önizleme Alanı -->
-            <div class="preview-container">
+            <div class="preview-container m-0 mb-4">
                 <img id="previewImage" class="preview-image" alt="Yüklenen görsel burada görünecek">
             </div>
         </div>
 
         <div class="row my-2">
-            <div class="col">
-                <button onclick="NameControl()" type="text" id="myName" class="btn btn-success">Oyna</button>
+            <div class="col d-grid gap-2">
+                <button onclick="NameControl()" type="text" id="OynaButton" class="btn btn-success">Oyna</button>
             </div>
         </div>
     </div>
@@ -69,82 +74,10 @@
         </div>
     </div>
 
-    <div id="GameMenuE" class="close">
-    </div>
-
     <div id="GameMenu" class="close">
-        
-        <div class="container-fluid mobilMenu">
 
-            <!-- Sağ Taraf: Canvas ve Sohbet -->
-            <div class="right-panel">
-                <!-- Canvas (sağ üst köşe) -->
-                <div class="canvas-container m-0">
-                    <canvas id="drawingCanvasMobile" width="600" height="400"></canvas>
-                </div>
-        
-                <!-- Sohbet Alanı (sağ alt köşe) -->
-                <div class="chat-container">
-                    <div class="row">
-                        <div class="scoreboard ms-2">
-                            <div id="playerScores" class="score-list">
-                                <!-- Puanlar burada olacak -->
-                                <div class="player">
-                                        <div class="user-icon user-icon-line">
-                                          <i class="fas fa-user"></i>
-                                        </div>
-                                        <div class="text"><b>Ebubekir</b><br> Puan: 30</div>
-                                </div>
-                                <div class="player">
-                                    <div class="user-icon user-icon-line">
-                                      <i class="fas fa-user"></i>
-                                    </div>
-                                    <div class="text"><b>Musa</b><br> Puan: 15</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row m-0" style="width: 100%;">
-                        <div class="col-12 mb-2">
-                            <div class="row mx-1">
-                                <div class="col d-grid gap-2 p-0">
-                                    <button onclick="chatChange('Tahmin',this)" class="rounded-start btn-tahminAndSohbet secilen">Tahmin</button>
-                                </div>
-                                <div class="col d-grid gap-2 p-0">
-                                    <button onclick="chatChange('Sohbet',this)" class="rounded-end btn-tahminAndSohbet">Sohbet</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col">
-                            <div class="chat-box">
-                                    <div id="chat-header" class="chat-header">
-                                        <i class="fa-solid fa-reply"></i>Tahmin
-                                    </div>
-
-                                    <div id="send-messages" class="chat-messages chats">
-                                        <!-- Sohbet mesajları burada olacak -->
-                                    </div>
-                                    <div id="chat-messages" class="mobile-chat-messages chat-messages chats close">
-                                        <!-- Sohbet mesajları burada olacak -->
-                                    </div>
-
-                                    <div class="chat-input">
-                                        <input type="text" class="myMessage" placeholder="Mesajınızı yazın...">
-                                        <button onclick="SendMessage()" id="sendMessage">
-                                            <i class="fas fa-paper-plane"></i>
-                                        </button>
-                                    </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
-        <div class="container-fluid pcMenu">
+        <div id="gameMenucuk" class="container-fluid pcMenu">
             <!-- Sol Taraf: Puan Tablosu -->
-            <div id="scoreboardContainer">
             <div id="scoreboard" class="scoreboard">
                 <div id="playerScores" class="score-list">
                     <!-- Puanlar burada olacak -->
@@ -169,7 +102,7 @@
                                         </div>
                                 </div>
                 </div>
-            </div>
+
             </div>
         
             <!-- Sağ Taraf: Canvas ve Sohbet -->
@@ -182,7 +115,14 @@
                 <!-- Sohbet Alanı (sağ alt köşe) -->
                 <div class="chat-container">
                     <div class="row m-0" style="width: 100%;">
-                        <div id="mobil-menu-chat-change" class="col-12 mb-2">
+                        
+                    <div id="chat-container-scor" class="col-3 pe-0">
+
+                    </div>
+
+                    <div id="chat-container-chats" class="col-9 ps-2 pe-0">
+                    <div class="row m-0" style="width: 100%;height: 100%;">
+                        <div id="mobil-menu-chat-change" class="col-12 mb-2 px-0">
                             <div class="row mx-1">
                                 <div class="col d-grid gap-2 p-0">
                                     <button onclick="chatChange('tahmin-chat-box',this)" class="rounded-start btn-tahminAndSohbet secilen">Tahmin</button>
@@ -193,23 +133,20 @@
                             </div>
                         </div>
 
-                        <div id="chat-container" class="col">
 
-                        </div>
-
-                        <div id="tahmin-chat-box" class="col ps-3 p-0 chats">
+                        <div id="tahmin-chat-box" class="col p-0 chats">
                             <div class="chat-box">
                                 <div class="row h-100">
                                     <div class="col-12">
                                         <div class="chat-header">
-                                            <i class="fas fa-comments"></i> Tahmin
+                                            <i class="fa-solid fa-pencil"></i> Tahmin
                                         </div>
                                         <div id="send-messages" class="chat-messages">
                                             <!-- Sohbet mesajları burada olacak -->
                                         </div>
                                         <div class="chat-input">
-                                            <input type="text" class="myMessageSend" placeholder="Mesajınızı yazın...">
-                                            <button onclick="SendMessage()" id="sendMessage">
+                                            <input id="mySendMessage" type="text" class="mySendMessage" placeholder="Mesajınızı yazın...">
+                                            <button onclick="SendMessage('mySendMessage','send-messages')" id="sendMessage">
                                                 <i class="fas fa-paper-plane"></i>
                                             </button>
                                         </div>
@@ -217,25 +154,28 @@
                                 </div>
                             </div>
                         </div>
-                        <div id="sohbet-chat-box" class="col ps-3 p-0 chats">
+
+                        <div id="sohbet-chat-box" class="col p-0 chats">
                             <div class="chat-box">
                                 <div class="chat-header">
                                     <i class="fas fa-comments"></i> Sohbet
                                 </div>
                 
-                                <div id="chat-messages" class="desktop-chat-messages chat-messages">
+                                <div id="chat-messages" class="chat-messages">
                                     <!-- Sohbet mesajları burada olacak -->
                                 </div>
                 
                                 <div class="chat-input">
                                     <input id="myMessage" type="text" class="myMessage" placeholder="Mesajınızı yazın...">
-                                    <button onclick="SendMessage()" id="sendMessage">
+                                    <button onclick="SendMessage('myMessage','chat-messages')" id="sendMessage">
                                         <i class="fas fa-paper-plane"></i>
                                     </button>
                                 </div>
                             </div>
                         </div>
                     </div>
+                </div>
+                </div>
                 </div>
             </div>
         </div>
