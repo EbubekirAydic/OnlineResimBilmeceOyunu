@@ -22,15 +22,29 @@ channel.bind("client-message", (data) => {
       
   message = escapeOutput(data.message);
   name = escapeOutput(data.name);
-  img = escapeOutput(data.img);
+  img = data.img;
+
+  console.log(img ? `` : `user-icon-line`);
+  console.log(img ? 
+    `<img src="${img}" alt="User Image" style="width: 30px; height: 30px; border-radius: 50%;">` 
+    : 
+    `<i class="fas fa-user"></i>`
+  );
       
-  $('.mobile-chat-messages,.desktop-chat-messages').prepend(`
-      <div class="message">
-          <div class="user-icon">
-              <i class="fas fa-user"></i>
-          </div>
-          <div class="text"><b>${name}</b> : ${message}</div>
-      </div>`);
+  $('#chat-messages').append(`
+    <div class="message">
+        <div class="user-icon ${img ? `` : `user-icon-line`}">
+        ${img ? 
+          `<img src="${img.src}" alt="User Image" style="width: 30px; height: 30px; border-radius: 50%;">` 
+          : 
+          `<i class="fas fa-user"></i>`
+        }
+        </div>
+        <div class="text"><b>${name}</b> : ${message}</div>
+    </div>
+  `);
+  console.log('Bilal');
+
 });
   
 $('#myMessage').keydown(function(event) {
@@ -54,13 +68,11 @@ function SendMessage(messageInput,messageDiv,ServerName,IsServer,ServerMessage) 
 
   setupChatScroll(`#${messageDiv}`);
   mesajEkle(`#${messageDiv}`);
-  
+
   channel.trigger("client-message", {
     name: $('#myName').val(),
     message: $(`#${messageInput}`).val(),
-    if (preview) {
-      img = preview.src;
-    },
+    img: preview ? preview.src : null,
   });
   
   if (IsServer) {
@@ -271,7 +283,6 @@ function chatChange(chatName,button) {
         ctx.moveTo(x, y);
 
         // Diğer canvas'a da aynısını uygula
-        const targetRect = targetCtx.canvas.getBoundingClientRect();
         const targetX = x * (targetCtx.canvas.width / canvas.width);
         const targetY = y * (targetCtx.canvas.height / canvas.height);
 
@@ -329,19 +340,12 @@ function setupChatScroll(chatSelector) {
   $(chatSelector).on("scroll", function() {
       let div = $(this);
 
-      // Kaydırma pozisyonlarını kontrol et
-      console.log("ScrollTop:", div.scrollTop());
-      console.log("Container Height:", div.innerHeight());
-      console.log("Total Scroll Height:", div[0].scrollHeight);
-
       // Kullanıcı en alta kaymış mı?
       if (div.scrollTop() + div.innerHeight() >= div[0].scrollHeight - 10) {
           scrollLock = true;  // En alttaysa otomatik kaydırma açık
       } else {
           scrollLock = false; // Yukarı kaydırdıysa otomatik kaydırma kapalı
       }
-
-      console.log("scrollLock updated to:", scrollLock);
   });
 
   let div = $(chatSelector);
