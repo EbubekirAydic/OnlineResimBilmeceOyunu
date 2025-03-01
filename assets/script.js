@@ -1,6 +1,8 @@
-let pusher;
-let preview;
+let pusher; // Pusher nesnesi
+let preview; //Görsel önizleme
+let imageUrl; // Görsel URL'si
 
+// HTML'e eklenen metinleri güvenli hale getirmek için fonksiyon
 function escapeOutput(toOutput){
     return toOutput.replace(/\&/g, '&amp;')
         .replace(/\</g, '&lt;')
@@ -10,32 +12,29 @@ function escapeOutput(toOutput){
         .replace(/\//g, '&#x2F;');
 }
 
+// Pusher nesnesini oluştur
 pusher = new Pusher("a9e16f9df028c5878b24", {
   cluster: "eu",
   authEndpoint: "https://phpr.org/pusher.php"
 });
-  
+
+// Kanal oluştur
 var channel = pusher.subscribe("private-channel");
   
+// Kanaldan gelen mesajları yazdır
 channel.bind("client-message", (data) => {
   console.log(data);
       
   message = escapeOutput(data.message);
   name = escapeOutput(data.name);
   img = data.img;
-
-  console.log(img ? `` : `user-icon-line`);
-  console.log(img ? 
-    `<img src="${img}" alt="User Image" style="width: 30px; height: 30px; border-radius: 50%;">` 
-    : 
-    `<i class="fas fa-user"></i>`
-  );
+  messageDiv = data.massageDiv;
       
-  $('#chat-messages').append(`
+  $(`#${messageDiv}`).append(`
     <div class="message">
         <div class="user-icon ${img ? `` : `user-icon-line`}">
         ${img ? 
-          `<img src="${img.src}" alt="User Image" style="width: 30px; height: 30px; border-radius: 50%;">` 
+          `<img src="${img}" alt="User Image" style="width: 30px; height: 30px; border-radius: 50%;">` 
           : 
           `<i class="fas fa-user"></i>`
         }
@@ -43,7 +42,26 @@ channel.bind("client-message", (data) => {
         <div class="text"><b>${name}</b> : ${message}</div>
     </div>
   `);
-  console.log('Bilal');
+
+});
+//kanaldan gelen kullanıcıları ekle ve yazdır
+channel.bind("client-user", (data) => {
+  console.log(data);
+  userName = escapeOutput(data.name);
+  userImg = data.img;
+
+  $('#playerScores').append(`
+    <div class="player">
+        <div class="user-icon ${userImg ? `` : `user-icon-line`}">
+        ${userImg ? 
+          `<img src="${userImg}" alt="User Image" style="width: 30px; height: 30px; border-radius: 50%;">` 
+          : 
+          `<i class="fas fa-user"></i>`
+        }
+        </div>
+        <div class="text"><b>${userName}</b></div>
+    </div>
+  `);
 
 });
   
@@ -69,11 +87,15 @@ function SendMessage(messageInput,messageDiv,ServerName,IsServer,ServerMessage) 
   setupChatScroll(`#${messageDiv}`);
   mesajEkle(`#${messageDiv}`);
 
+
+
   channel.trigger("client-message", {
     name: $('#myName').val(),
     message: $(`#${messageInput}`).val(),
-    img: preview ? preview.src : null,
+    img: preview ? imageUrl: null,
+    massageDiv: messageDiv,
   });
+
   
   if (IsServer) {
     ServerName = escapeOutput($('#myName').val());
@@ -185,9 +207,18 @@ function NameControl() {
 
   console.log("Kullanıcı adında sıkıntı yok!");
   nameSave(PersonName)
+  if (preview){
+    uploadImage(preview.src); // Görseli yükleme ve URL'sini almak için fonksiyonu çağır
+  }
   GoToFunction('GameMenu');
 }
 
+
+
+
+// KAYITLI İSİM VE GÖRSELİ YÜKLEME VE KAYDETME
+
+// Kayıtlı isim ve görseli yükle
 let PersoneNameSave = {PersoneName : '',PersoneImg : ''};
 
 if (localStorage.getItem('PersoneNameSave')) {
@@ -203,21 +234,15 @@ if (localStorage.getItem('PersoneNameSave')) {
   $('#myName').val(PersoneNameSave.PersoneName);
 }
 
+// İsim ve görseli kaydet
 function nameSave(PersonName) {
   PersoneNameSave.PersoneName = PersonName;
 
-  // Dosyayı oku ve base64 formatına çevir
-  const fileInput = $('#fileInput')[0];
-  const file = fileInput.files[0];
-
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = function(e) {
-      PersoneNameSave.PersoneImg = e.target.result; // Base64 formatında görseli kaydet
-      localStorage.setItem('PersoneNameSave', JSON.stringify(PersoneNameSave));
-    };
-    reader.readAsDataURL(file); // Dosyayı base64 formatına çevir
+  if (preview) {
+    PersoneNameSave.PersoneImg = preview.src;
   }
+
+  localStorage.setItem('PersoneNameSave', JSON.stringify(PersoneNameSave));
 }
 
 //localStorage.removeItem('PersoneNameSave');
@@ -281,18 +306,6 @@ function chatChange(chatName,button) {
         ctx.stroke();
         ctx.beginPath();
         ctx.moveTo(x, y);
-
-        // Diğer canvas'a da aynısını uygula
-        const targetX = x * (targetCtx.canvas.width / canvas.width);
-        const targetY = y * (targetCtx.canvas.height / canvas.height);
-
-        targetCtx.lineWidth = 3;
-        targetCtx.lineCap = "round";
-        targetCtx.strokeStyle = "black";
-        targetCtx.lineTo(targetX, targetY);
-        targetCtx.stroke();
-        targetCtx.beginPath();
-        targetCtx.moveTo(targetX, targetY);
     }
 
     // Canvas 1 olayları
@@ -432,3 +445,66 @@ themeToggleButton.addEventListener('click', () => {
   const newTheme = currentTheme === 'dark-mode' ? 'light-mode' : 'dark-mode';
   setTheme(newTheme);
 });
+
+
+
+
+
+
+
+
+
+
+
+
+// Resmi Base64 olarak yükleme ve gönderme
+
+async function uploadImage(previeW) {
+
+  let file = previeW ? previeW : null;
+
+  if (!file) {
+    return null;
+  }
+
+  // Convert base64 to Blob
+  const base64Response = await fetch(file);
+  const blob = await base64Response.blob();
+
+
+  let formData = new FormData();
+  formData.append("image", blob, "image.png"); // Added filename for the blob
+
+  try {
+    // ✅ Resmi ImgBB'ye yüklüyoruz
+
+    let response = await fetch("https://api.imgbb.com/1/upload?key=46f0d10cac42bc77a03315b676949a88", {
+      method: "POST",
+      body: formData
+    });
+
+    let result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(`Hata Kodu: ${response.status}, Mesaj: ${result.error ? result.error.message : 'Bilinmeyen hata'}`);
+    }
+
+    imageUrl = result.data.url;
+
+    // 📌 Resmi Pusher ile gönder
+
+  } catch (error) {
+    // Hata durumunda hata mesajını konsola yazdırıyoruz
+    console.error("Resim yükleme hatası:", error);
+    return null;
+  }
+}
+
+
+
+
+
+
+
+
+

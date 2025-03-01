@@ -1,5 +1,28 @@
 body {
     background-color: #f2f2f2;
+    height: auto;
+    width: auto;
+}
+
+html{
+    scrollbar-width: thin;
+    scrollbar-color: #2e2e2e #141414;
+    height: auto;
+    width: auto;
+    overflow-x: hidden;
+}
+
+header{
+    background-color: #f1eded;
+    color: #2a2a2a;
+    padding: 0px 15px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    height: 10hv;
+}
+header.dark-mode{
+    background-color: #2a2a2a;
+    color: #f1eded;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .close{
@@ -22,11 +45,7 @@ body {
 
 #baslik {
     margin-top: 15px;
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 5vw;
-    white-space: nowrap; /* Eğer başlık tek satırda kalmasını istiyorsan */
+    font-size: 30px;
 
     font-family: 'Poppins', sans-serif; /* Güzel bir font */
     font-weight: 700; /* Kalın font */
@@ -36,6 +55,12 @@ body {
 }
 #baslik.dark-mode{
     color: white;
+}
+#butonCol{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
 }
 
 .preview-container {
@@ -107,7 +132,7 @@ input[type="file"] {
     padding: 8px 12px;
     border-radius: 5px;
     cursor: pointer;
-    transition: background 0.3s ease;
+    transition: background-color 0.3s ease;
   }
   
   .dark-mode input[type="file"]::-webkit-file-upload-button:hover {
@@ -122,7 +147,7 @@ input[type="file"] {
     padding: 8px 12px;
     margin: 0px;
     margin-right: 5px;
-    transition: background 0.3s ease;
+    transition: background-color 0.3s ease;
   }
   
   .dark-mode input[type="file"]::file-selector-button:hover {
@@ -283,22 +308,29 @@ input[type="file"] {
     flex-direction: column;
     gap: 15px;
 }
+:root {
+    --header-height: 70px;
+    --canvas-width: 767px;
+    --canvas-height: 448px;
+}
 
 /* Canvas Alanı */
 .canvas-container {
-    height: 90%; /* Ekranın tam yüksekliği */
     display: flex;
     justify-content: center;
     align-items: center;
     background-color: #ffffff;
-    padding: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+    width: var(--canvas-width) !important;
+    height: var(--canvas-height) !important;
+    overflow: hidden;
 }
 
-#drawingCanvas {
-    width: 100%; /* Ekranın tam genişliği */
-    height: 100%; /* Ekranın tam yüksekliği */
+#drawingCanvasPc {
+    width: var(--canvas-width);
+    height: var(--canvas-height);
     background-color: #fff;
     border-radius: 10px;
     border: 1px solid #2a2a2a;
@@ -309,15 +341,19 @@ input[type="file"] {
     display: flex;
     flex-direction: row;
     gap: 10px;
-    height: 100%;
+    width: 767px;
+}
+
+.MyCenter{
+    display: flex;
+    justify-content: center;
+    height: calc(100% - 420px);
 }
 
 .chat-box {
     background-color: rgba(0, 0, 0, 0.7);
     color: white;
-    padding: 15px;
-    padding-top: 10px;
-    padding-bottom: 0px;
+    padding: 0px 15px;
     border-radius: 10px;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
     height: 100%;
@@ -326,7 +362,8 @@ input[type="file"] {
 .chat-header {
     font-size: 15px;
     font-weight: bold;
-    margin-bottom: 10px;
+    margin-bottom: 6px;
+    margin-top: 7px;
     color: #ffc107;
     display: flex;
     justify-content: space-between;
@@ -338,7 +375,7 @@ input[type="file"] {
 }
 
 .chat-messages {
-    height: 65%;
+    height: calc(100% - 33.5px - 39px - 5px - 10px);
     overflow-y: auto;
     margin-bottom: 5px;
     padding: 10px;
@@ -448,6 +485,8 @@ input[type="file"] {
 }
 
 #mobil-menu-chat-change{
+    margin-bottom: 10px;
+    height: 50px;
     display: none;
 }
 
@@ -462,7 +501,7 @@ input[type="file"] {
     height: 99%;
 }
 
-@media screen and (min-width: 768px){
+@media screen and (min-width: 769px){
 
     #sohbet-chat-box{
         display: block !important;
@@ -483,7 +522,7 @@ input[type="file"] {
 }
 
 /* Responsive Tasarım */
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 768px) and (min-width: 426px) {
 
     .chats{
         height: 75%;
@@ -507,8 +546,61 @@ input[type="file"] {
     display: block;
 }
 
-.chat-messages {
-    height: 55%;
+#mobil-menu-chat-change{
+    display: grid;
+    height: 40px;
+}
+
+    .right-panel {
+        width: 100%;
+    }
+    
+    #baslik {
+        font-size: 20px;
+    }
+    header {
+        height: 60px !important;
+    }
+    :root {
+        --header-height: 60px !important;
+        --canvas-width: 100vw !important;
+        --canvas-height: calc(100vw* .584) !important;
+        --canvas-margin: 0 !important;
+    }
+    .canvas-container {
+        width: var(--canvas-width) !important;
+        height: var(--canvas-height) !important;
+        margin: var(--canvas-margin) !important;
+    }
+    #drawingCanvasPc {
+        width: var(--canvas-width) !important;
+        height: var(--canvas-height) !important;
+    }
+}
+
+/* Responsive Tasarım */
+@media screen and (max-width: 426px) {
+
+    .chats{
+        height: 75%;
+    }
+    
+.scoreboard {
+    width: 100%;
+    height: 100%;
+}
+
+#sohbet-chat-box{
+    display: none;
+    width: 100%;
+}
+
+#tahmin-chat-box{
+    width: 100%;
+}
+
+#chat-container-scor{
+    display: block;
 }
 
 #mobil-menu-chat-change{
@@ -518,20 +610,49 @@ input[type="file"] {
     .right-panel {
         width: 100%;
     }
+    
+#baslik {
+    font-size: 15px;
+}
+
+:root {
+    --header-height: 0px !important;
+    --canvas-width: 100vw !important;
+    --canvas-height: calc(100vw* .584) !important;
+    --canvas-margin: 0 !important;
+}
+
+header {
+    height: var(--header-height) !important;
+    display: none;
+}
+
+.canvas-container {
+    width: var(--canvas-width) !important;
+    height: var(--canvas-height) !important;
+    margin: var(--canvas-margin) !important;
+}
+#drawingCanvasPc {
+    width: var(--canvas-width) !important;
+    height: var(--canvas-height) !important;
+}
 
 }
 
 #theme-toggle {
-    background-color: #f0f0f0;
+    background-color: #e5e5e5;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    
     color: black;
     border: none;
     padding: 10px;
     cursor: pointer;
     border-radius: 5px;
+    transition: background-color 0.3s ease;
   }
   
 #theme-toggle:hover {
-    background-color: #ddd;
+    background-color: #d1d1d1;
 }
 
 /* Gece Modu */
@@ -546,5 +667,35 @@ body.dark-mode {
 }
   
 #theme-toggle.dark-mode:hover {
-    background-color: #555;
+    background-color: #454545;
+}
+
+header{
+    height: 70px;
+}
+
+#GameMenu {
+    height: calc(100vh - var(--header-height));
+}
+
+@media screen and (min-width: 1920px) {
+    :root {
+        --canvas-width: 60vw;
+        --canvas-height: calc(60vw* .584);
+    }
+
+    /* Canvas Alanı */
+    .canvas-container {
+        width: var(--canvas-width) !important;
+        height: var(--canvas-height) !important;
+        overflow: hidden;
+    }
+
+    #drawingCanvasPc{
+        width: var(--canvas-width) !important;
+        height: var(--canvas-height) !important;
+    }
+    .chat-container {
+        width: 60vw;
+    }
 }
