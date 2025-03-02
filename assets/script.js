@@ -84,6 +84,8 @@ $('#mySendMessage').keydown(function(event) {
 
 function SendMessage(messageInput,messageDiv,ServerName,IsServer,ServerMessage) {
 
+  if (!escapeOutput($(`#${messageInput}`).val()) == '') {
+
   setupChatScroll(`#${messageDiv}`);
   mesajEkle(`#${messageDiv}`);
 
@@ -120,7 +122,6 @@ function SendMessage(messageInput,messageDiv,ServerName,IsServer,ServerMessage) 
       img = null
     }
 
-    if (!message == '') {
       
     $(`#${messageDiv}`).append(`
                 <div class="message">

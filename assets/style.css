@@ -5,8 +5,6 @@ body {
 }
 
 html{
-    scrollbar-width: thin;
-    scrollbar-color: #2e2e2e #141414;
     height: auto;
     width: auto;
     overflow-x: hidden;
@@ -334,7 +332,6 @@ input[type="file"] {
     height: var(--canvas-height);
     background-color: #fff;
     border-radius: 10px;
-    border: 1px solid #2a2a2a;
 }
 
 /* Sohbet Alanı */
@@ -376,7 +373,9 @@ input[type="file"] {
 }
 
 .chat-messages {
-    height: calc(100% - 33.5px - 39px - 5px - 10px);
+    /*Tahmin ve sohbet butonu : 60px Beyaz yer ile aşşağıdaki yer boşluğu: 19px Chat-Başlığı: 33.5px input: 39px chat ile input arası: 5px input ile aşşağı arası: 8px*/
+    height: calc(100vh - var(--header-height) - var(--canvas-height) - 19px - 35.5px - 39px - 5px);
+    
     overflow-y: auto;
     margin-bottom: 5px;
     padding: 10px;
@@ -386,28 +385,30 @@ input[type="file"] {
 
 /* Scrollbar Genel Ayarlar */
 .chat-messages::-webkit-scrollbar {
-    width: 6px; /* Kaydırma çubuğu genişliği */
+    width: 6px !important; /* Kaydırma çubuğu genişliği */
 }
 
 /* Scrollbar Track (Arka plan) */
 .chat-messages::-webkit-scrollbar-track {
-    background: #2e2e2e; /* Kaydırma arkaplan rengi */
-    border-radius: 10px;
+    background: #2e2e2e !important; /* Kaydırma arkaplan rengi */
+    border-radius: 10px !important;
 }
 
 /* Scrollbar Thumb (Kaydırma çubuğu) */
 .chat-messages::-webkit-scrollbar-thumb {
-    background: #777; /* Kaydırma çubuğu rengi */
-    border-radius: 10px;
+    background: #454545 !important; /* Kaydırma çubuğu rengi */
+    border-radius: 10px !important;
 }
 
 /* Scrollbar üzerine gelince renk değişimi */
 .chat-messages::-webkit-scrollbar-thumb:hover {
-    background: #555;
+    background: #555 !important;
 }
 
 .message {
     margin-bottom: 5px;
+    width: 100%;
+    display: inline-block;
 }
 
 .user-icon {
@@ -423,7 +424,7 @@ input[type="file"] {
     border-radius: 50%;
     text-align: center;
     font-size: 14px;
-    margin-right: 10px;
+    margin-right: 5px;
 }
 
 .user-icon.dark-mode {
@@ -449,7 +450,7 @@ input[type="file"] {
     border-radius: 8px;
     color: white;
     font-size: 14px;
-    max-width: 80%;
+    max-width: calc(100% - 40px);
     word-wrap: break-word;
 }
 
@@ -486,7 +487,7 @@ input[type="file"] {
 }
 
 #mobil-menu-chat-change{
-    margin-bottom: 10px;
+    margin-bottom: 5px;
     height: 50px;
     display: none;
 }
@@ -498,8 +499,9 @@ input[type="file"] {
     display: none !important;
 }
 
-.chats{
-    height: 99%;
+
+.player .col-9 .playerPuan p{
+    margin: 0px;
 }
 
 @media screen and (min-width: 769px){
@@ -517,18 +519,85 @@ input[type="file"] {
     #chat-container-chats{
         width: 100%;
     }
-    .chats{
-        width: 50%;
+}
+@media screen and (max-width: 768px) and (min-width: 540px) {
+    .player .col-9 .playerPuan{
+        font-size: 12px;
+    }
+    .chat-messages {
+        /*Tahmin ve sohbet butonu : 60px Beyaz yer ile aşşağıdaki yer boşluğu: 19px Chat-Başlığı: 33.5px input: 39px chat ile input arası: 5px input ile aşşağı arası: 8px*/
+        height: calc(100vh - var(--header-height) - var(--canvas-height) - 56px - 19px - 35.5px - 39px - 5px);
+        
+        /*width 100vw - soldaki score tablosunu çıkar*/
+        width: calc(100vw - 25vw - 24px - 30px);
+    }
+}
+@media screen and (max-width: 540px) {
+    
+    .chat-messages {
+        /*Tahmin ve sohbet butonu : 60px Beyaz yer ile aşşağıdaki yer boşluğu: 19px Chat-Başlığı: 33.5px input: 39px chat ile input arası: 5px input ile aşşağı arası: 8px*/
+        height: calc(100vh - var(--header-height) - var(--canvas-height) - 56px - 19px - 35.5px - 39px - 5px);
+        
+        /*width 100vw - soldaki score tablosunu çıkar*/
+        width: calc(100vw - 25vw - 14px);
+    }
+.scoreboard{
+    padding: 0 !important;
+}
+
+#chat-container-scor{
+    display: block;
+    padding: 0px 0px;
+}
+    .player .col-9 .playerPuan{
+        font-size: 10px;
+        background-color: transparent;
+        padding: 0px;
+        margin: 0px;
+        width: auto;
+    }
+    .player .col-9 .playerPuan p{
+        font-size: 8px;
+        background-color: #dbdbdb;
+        border-radius: 20px;
+        padding: 2px 5px;
+        margin: 0px;
+    }
+    .player .col-9 .playerPuan p span{
+        background-color: #b0b0b0;
+        border-radius: 20px;
+        padding: 1px 3px;
+    }
+    
+    .player .col-9 .playerPuan p.dark-mode{
+        background-color: #444;
+    }
+    .player .col-9 .playerPuan p span.dark-mode{
+        background-color: #5c5c5c;
+    }
+    
+    .player .col-9{
+        padding-left: 6px;
+    }
+    .player .col{
+        width: 25px !important;
+    }
+    .player .col .user-icon{
+        font-size: 10px;
+        height: 25px;
+        width: 25px;
     }
 }
 
 /* Responsive Tasarım */
 @media screen and (max-width: 768px) and (min-width: 426px) {
 
-    .chats{
-        height: 75%;
-    }
     
+    .chat-messages {
+        /*width 100vw - soldaki score tablosunu çıkar*/
+        width: calc(100vw - 25vw - 24px);
+    }
+
 .scoreboard {
     width: 100%;
     height: 100%;
@@ -590,38 +659,6 @@ input[type="file"] {
 
 /* Responsive Tasarım */
 @media screen and (max-width: 426px) {
-    
-.player .col-9 .playerPuan{
-    font-size: 10px;
-    background-color: transparent;
-    padding: 0px;
-    margin: 0px;
-    width: auto;
-}
-.player .col-9 .playerPuan p{
-    font-size: 8px;
-    background-color: #444;
-    border-radius: 20px;
-    padding: 2px 5px;
-    margin: 0px;
-}
-.player .col-9 .playerPuan p span{
-    background-color: #5c5c5c;
-    border-radius: 20px;
-    padding: 1px 3px;
-}
-
-.player .col-9{
-    padding-left: 6px;
-}
-.player .col{
-    width: 25px !important;
-}
-.player .col .user-icon{
-    font-size: 10px;
-    height: 25px;
-    width: 25px;
-}
 
 /* Profil Resmi Gibi Görsel */
 .btn-tahminAndSohbet{
@@ -639,7 +676,7 @@ input[type="file"] {
 }
 
 .chats{
-    height: 75%;
+    height: calc(100vh - var(--header-height) - var(--canvas-height) - 60px);
 }
     
 .scoreboard{
@@ -647,8 +684,6 @@ input[type="file"] {
     height: 100%;
     padding: 0 !important;
 }
-
-
 
 #sohbet-chat-box{
     display: none;
