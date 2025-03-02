@@ -423,9 +423,9 @@ function setTheme(theme) {
 
   // Düğme metnini değiştirme
   if (theme === 'dark-mode') {
-    themeToggleButton.textContent = 'Aydınlık Modu';
+    themeToggleButton.innerHTML = 'Gece Modu <i class="fas fa-moon" style="margin-left: 5px;"></i>';
   } else {
-    themeToggleButton.textContent = 'Gece Modu';
+    themeToggleButton.innerHTML = 'Aydınlık Modu <i class="fas fa-sun" style="margin-left: 5px;"></i>';
   }
 }
 
@@ -435,7 +435,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (savedTheme) {
     setTheme(savedTheme); // Yerel depolamadan tema seçimini uygula
   } else {
-    setTheme('light-mode'); // Varsayılan olarak Aydınlık Modu
+    setTheme('dark-mode'); // Varsayılan olarak Aydınlık Modu
   }
 });
 

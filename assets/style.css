@@ -17,7 +17,7 @@ header{
     color: #2a2a2a;
     padding: 0px 15px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    height: 10hv;
+    height: 70px;
 }
 header.dark-mode{
     background-color: #2a2a2a;
@@ -173,6 +173,7 @@ input[type="file"] {
 
     transition: background-color 0.2s, color 0.2s;
 }
+
 .btn-tahminAndSohbet:hover{
     background-color: #b7b7b7;
 }
@@ -558,6 +559,9 @@ input[type="file"] {
     #baslik {
         font-size: 20px;
     }
+    #theme-toggle {
+        font-size: 12px;
+    }
     header {
         height: 60px !important;
     }
@@ -576,19 +580,75 @@ input[type="file"] {
         width: var(--canvas-width) !important;
         height: var(--canvas-height) !important;
     }
+    
+.MyCenter{
+    display:inline-flex;
+    height: 100%;
+}
+
 }
 
 /* Responsive Tasarım */
 @media screen and (max-width: 426px) {
-
-    .chats{
-        height: 75%;
-    }
     
-.scoreboard {
+.player .col-9 .playerPuan{
+    font-size: 10px;
+    background-color: transparent;
+    padding: 0px;
+    margin: 0px;
+    width: auto;
+}
+.player .col-9 .playerPuan p{
+    font-size: 8px;
+    background-color: #444;
+    border-radius: 20px;
+    padding: 2px 5px;
+    margin: 0px;
+}
+.player .col-9 .playerPuan p span{
+    background-color: #5c5c5c;
+    border-radius: 20px;
+    padding: 1px 3px;
+}
+
+.player .col-9{
+    padding-left: 6px;
+}
+.player .col{
+    width: 25px !important;
+}
+.player .col .user-icon{
+    font-size: 10px;
+    height: 25px;
+    width: 25px;
+}
+
+/* Profil Resmi Gibi Görsel */
+.btn-tahminAndSohbet{
+    padding: 0px 0px;
+}
+
+.chat-box {
+    padding: 0px 8px;
+}
+
+.MyCenter{
+    display:inline-flex;
+    height: 100%;
+    margin-top: 0;
+}
+
+.chats{
+    height: 75%;
+}
+    
+.scoreboard{
     width: 100%;
     height: 100%;
+    padding: 0 !important;
 }
+
+
 
 #sohbet-chat-box{
     display: none;
@@ -601,10 +661,12 @@ input[type="file"] {
 
 #chat-container-scor{
     display: block;
+    padding: 0px 0px;
 }
 
 #mobil-menu-chat-change{
     display: grid;
+    height: 40px;
 }
 
     .right-panel {
@@ -614,9 +676,12 @@ input[type="file"] {
 #baslik {
     font-size: 15px;
 }
+#theme-toggle {
+    font-size: 10px;
+}
 
 :root {
-    --header-height: 0px !important;
+    --header-height: 50px !important;
     --canvas-width: 100vw !important;
     --canvas-height: calc(100vw* .584) !important;
     --canvas-margin: 0 !important;
@@ -624,7 +689,6 @@ input[type="file"] {
 
 header {
     height: var(--header-height) !important;
-    display: none;
 }
 
 .canvas-container {
@@ -670,9 +734,6 @@ body.dark-mode {
     background-color: #454545;
 }
 
-header{
-    height: 70px;
-}
 
 #GameMenu {
     height: calc(100vh - var(--header-height));
