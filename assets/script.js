@@ -1,6 +1,8 @@
 let pusher; // Pusher nesnesi
 let preview; //Görsel önizleme
 let imageUrl; // Görsel URL'si
+let Kullanicilar = []; // Kullanıcılar dizisi
+let kullanici = {KullaniciName : '',}; // Kullanıcı nesnesi
 
 // HTML'e eklenen metinleri güvenli hale getirmek için fonksiyon
 function escapeOutput(toOutput){
@@ -44,6 +46,7 @@ channel.bind("client-message", (data) => {
   `);
 
 });
+
 //kanaldan gelen kullanıcıları ekle ve yazdır
 channel.bind("client-user", (data) => {
   console.log(data);
@@ -196,8 +199,8 @@ function NameControl() {
       return;
   }
 
-  if (PersonName.length > 30) {
-      showWarning("İsim çok uzun! Maksimum 30 karakter olmalıdır.");
+  if (PersonName.length > 14) {
+      showWarning("İsim çok uzun! Maksimum 14 karakter olmalıdır. Yazdığınız karakter sayısı :" + PersonName.length);
       return;
   }
 
@@ -211,8 +214,57 @@ function NameControl() {
   if (preview){
     uploadImage(preview.src); // Görseli yükleme ve URL'sini almak için fonksiyonu çağır
   }
+  scorBoardRefresh(PersonName);
   GoToFunction('GameMenu');
 }
+
+
+
+
+
+
+
+
+
+
+function scorBoardRefresh(name) {
+  $('#playerScores').html('');
+
+  channel.trigger("client-user", {
+    name: name,
+    img: preview ? imageUrl: null,
+  });
+  // Kullanıcıları HTML'e ekle
+  Kullanicilar.push({name: name, img: preview ? preview.src: null});
+
+  Kullanicilar.forEach((user) => {
+    $('#playerScores').append(`
+      
+    <div class="player ${Theme}">
+      <div class="col ${Theme}">
+          <div class="user-icon ${user.img ? `` : `user-icon-line`} ${Theme}">
+          ${user.img ? 
+            `<img id='Profil' src="${user.img}" alt="User Image">` 
+            : 
+            `<i class="fas fa-user ${Theme}"></i>`
+          }
+          </div>
+      </div>
+      <div class="col-9 ${Theme == 'dark-mode' ? 'dark-mode' : ''}">
+        <div class="playerPuan ${Theme}"><p><b>${user.name}</b></p><p id='Puan' class='${Theme}'>Puan: <span class='${Theme}'>0</span></p></div>
+      </div>
+    </div>
+    `);
+  });
+  
+}
+
+
+
+
+
+
+
 
 
 
@@ -397,7 +449,7 @@ function mesajEkle(chatSelector) {
 
 
 
-
+let Theme; // Tema değişkeni
 
 // Gece Modu ve Aydınlık Modu arasında geçiş yapmak için:
 const themeToggleButton = document.getElementById('theme-toggle');
@@ -406,6 +458,7 @@ const themeToggleButton = document.getElementById('theme-toggle');
 function setTheme(theme) {
   document.body.classList.remove('dark-mode', 'light-mode');
   document.body.classList.add(theme);
+  Theme = theme;
   document.querySelectorAll('*').forEach(function(element) {
     element.classList.remove('dark-mode');
   });

@@ -424,19 +424,11 @@ input[type="file"] {
     border-radius: 50%;
     text-align: center;
     font-size: 14px;
-    margin-right: 5px;
 }
 
 .user-icon.dark-mode {
-    display: inline-block;
-    width: 30px;
-    height: 30px;
     background-color: #4e5154;
-    border-radius: 50%;
-    text-align: center;
     color: white;
-    font-size: 14px;
-    margin-right: 10px;
 }
 
 .user-icon-line{
@@ -520,6 +512,16 @@ input[type="file"] {
         width: 100%;
     }
 }
+
+@media screen and (max-width: 700px){
+    /* İsim sığmassa ... koy */
+    .player .col-9 .playerPuan p{
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}
+
 @media screen and (max-width: 768px) and (min-width: 540px) {
     .player .col-9 .playerPuan{
         font-size: 12px;
@@ -532,6 +534,13 @@ input[type="file"] {
         width: calc(100vw - 25vw - 24px - 30px);
     }
 }
+
+.player .col .user-icon #Profil{
+    height: 30px;
+    width: 30px;
+    border-radius: 50%;
+}
+
 @media screen and (max-width: 540px) {
     
     .chat-messages {
@@ -554,39 +563,53 @@ input[type="file"] {
         background-color: transparent;
         padding: 0px;
         margin: 0px;
-        width: auto;
+        max-width: 90%;
     }
     .player .col-9 .playerPuan p{
+        margin: 0px;
+    }
+
+    .player .col-9 .playerPuan #Puan{
         font-size: 8px;
         background-color: #dbdbdb;
         border-radius: 20px;
         padding: 2px 5px;
-        margin: 0px;
+        width: fit-content;
     }
-    .player .col-9 .playerPuan p span{
+    .player .col-9 .playerPuan #Puan span{
         background-color: #b0b0b0;
         border-radius: 20px;
         padding: 1px 3px;
     }
     
-    .player .col-9 .playerPuan p.dark-mode{
+    .player .col-9 .playerPuan #Puan.dark-mode{
         background-color: #444;
     }
-    .player .col-9 .playerPuan p span.dark-mode{
+    .player .col-9 .playerPuan #Puan span.dark-mode{
         background-color: #5c5c5c;
     }
     
     .player .col-9{
         padding-left: 6px;
+        height: 31px;
     }
     .player .col{
         width: 25px !important;
+        /* Dikey padding ile ortala*/
+        
     }
     .player .col .user-icon{
         font-size: 10px;
         height: 25px;
         width: 25px;
     }
+    .player .col .user-icon #Profil{
+        height: 25px;
+        width: 25px;
+    }
+}
+
+@media screen and (max-width: 350px){
 }
 
 /* Responsive Tasarım */
