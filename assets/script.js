@@ -2,7 +2,7 @@ let pusher; // Pusher nesnesi
 let preview; //Görsel önizleme
 let imageUrl; // Görsel URL'si
 let Kullanicilar = []; // Kullanıcılar dizisi
-let kullanici = {KullaniciName : '',}; // Kullanıcı nesnesi
+var channel;
 
 // HTML'e eklenen metinleri güvenli hale getirmek için fonksiyon
 function escapeOutput(toOutput){
@@ -14,58 +14,72 @@ function escapeOutput(toOutput){
         .replace(/\//g, '&#x2F;');
 }
 
-// Pusher nesnesini oluştur
-pusher = new Pusher("a9e16f9df028c5878b24", {
-  cluster: "eu",
-  authEndpoint: "https://phpr.org/pusher.php"
+$(document).ready(function() {
+
+  // Pusher nesnesini oluştur
+  pusher = new Pusher("a9e16f9df028c5878b24", {
+    cluster: "eu",
+    authEndpoint: "https://phpr.org/pusher.php"
+  });
+
+
+  // Kanal oluştur
+  channel = pusher.subscribe("private-channel");
+    
+  // Kanaldan gelen mesajları yazdır
+  channel.bind("client-ChatMessage", (data) => {
+    console.log(data);
+        
+    message = escapeOutput(data.message);
+    name = escapeOutput(data.name);
+    img = data.img;
+    messageDiv = data.massageDiv;
+        
+    $(`#${messageDiv}`).append(`
+      <div class="message">
+          <div class="user-icon ${img ? `` : `user-icon-line`}">
+          ${img ? 
+            `<img src="${img}" alt="User Image" style="width: 30px; height: 30px; border-radius: 50%;">` 
+            : 
+            `<i class="fas fa-user"></i>`
+          }
+          </div>
+          <div class="text"><b>${name}</b> : ${message}</div>
+      </div>
+    `);
+
 });
 
-// Kanal oluştur
-var channel = pusher.subscribe("private-channel");
-  
-// Kanaldan gelen mesajları yazdır
-channel.bind("client-message", (data) => {
+//Birisi sunucuda var mı diye sor Varsa host olmasın ve host onu eklesin
+channel.bind("client-Is-there-anyone", (data) => {
+  console.log('');
+  console.log('Gelen kullanıcı:');
   console.log(data);
-      
-  message = escapeOutput(data.message);
-  name = escapeOutput(data.name);
-  img = data.img;
-  messageDiv = data.massageDiv;
-      
-  $(`#${messageDiv}`).append(`
-    <div class="message">
-        <div class="user-icon ${img ? `` : `user-icon-line`}">
-        ${img ? 
-          `<img src="${img}" alt="User Image" style="width: 30px; height: 30px; border-radius: 50%;">` 
-          : 
-          `<i class="fas fa-user"></i>`
-        }
-        </div>
-        <div class="text"><b>${name}</b> : ${message}</div>
-    </div>
-  `);
+  //biri yoksa zaten burası çalışmayacak
+
+  if (Kullanicilar[0] && $('#myName').val()) {
+    if (Kullanicilar[0].name == $('#myName').val()) {
+      console.log('Ben hostum');
+    
+      Kullanicilar.push({name: data.name, img: data.img});
+    
+      console.log(Kullanicilar);
+
+      channel.trigger("client-user", {
+        KullanicilarM: Kullanicilar,
+      });
+    
+      scorBoardRefresh();
+    }
+  }
 
 });
 
 //kanaldan gelen kullanıcıları ekle ve yazdır
 channel.bind("client-user", (data) => {
   console.log(data);
-  userName = escapeOutput(data.name);
-  userImg = data.img;
-
-  $('#playerScores').append(`
-    <div class="player">
-        <div class="user-icon ${userImg ? `` : `user-icon-line`}">
-        ${userImg ? 
-          `<img src="${userImg}" alt="User Image" style="width: 30px; height: 30px; border-radius: 50%;">` 
-          : 
-          `<i class="fas fa-user"></i>`
-        }
-        </div>
-        <div class="text"><b>${userName}</b></div>
-    </div>
-  `);
-
+  Kullanicilar = data.KullanicilarM;
+  scorBoardRefresh();
 });
   
 $('#myMessage').keydown(function(event) {
@@ -85,6 +99,24 @@ $('#mySendMessage').keydown(function(event) {
     }
 });
 
+
+
+});
+
+
+/* window.addEventListener("beforeunload", (event) => {
+  channel.trigger("user-left", {
+    name: $('#myName').val(),
+    img: preview ? imageUrl: null,
+  });
+}); */
+
+
+
+
+
+
+
 function SendMessage(messageInput,messageDiv,ServerName,IsServer,ServerMessage) {
 
   if (!escapeOutput($(`#${messageInput}`).val()) == '') {
@@ -94,7 +126,7 @@ function SendMessage(messageInput,messageDiv,ServerName,IsServer,ServerMessage) 
 
 
 
-  channel.trigger("client-message", {
+  channel.trigger("client-ChatMessage", {
     name: $('#myName').val(),
     message: $(`#${messageInput}`).val(),
     img: preview ? imageUrl: null,
@@ -105,7 +137,7 @@ function SendMessage(messageInput,messageDiv,ServerName,IsServer,ServerMessage) 
   if (IsServer) {
     ServerName = escapeOutput($('#myName').val());
     ServerMessage = escapeOutput($('#myMessage').val());
-    $('.mobile-chat-messages,.desktop-chat-messages').prepend(`
+    $(`#${messageDiv}`).prepend(`
                   <div class="message">
                       <div class="user-icon">
                           <i class="fas fa-user"></i>
@@ -209,13 +241,34 @@ function NameControl() {
       return;
   }
 
-  console.log("Kullanıcı adında sıkıntı yok!");
-  nameSave(PersonName)
+  console.log('Kullanıcı isminde sorun Yok: '+PersonName);
+  nameSave(PersonName);
   if (preview){
     uploadImage(preview.src); // Görseli yükleme ve URL'sini almak için fonksiyonu çağır
   }
-  scorBoardRefresh(PersonName);
+
+  NewUser(PersonName);
+
   GoToFunction('GameMenu');
+}
+
+
+
+
+
+
+function NewUser(NewUserName) {
+
+  // Kendini host olarak tanıt
+  Kullanicilar.push({name: NewUserName, img: preview ? imageUrl: null});
+  scorBoardRefresh();
+  
+  //--------------------------------------------------------------------------------
+  //eğer sunucuda biri varsa kendi bilgilerini gönder ve hostluktan çık
+  channel.trigger("client-Is-there-anyone", {
+    name: NewUserName,
+    img: preview ? imageUrl: null,
+  });
 }
 
 
@@ -227,35 +280,34 @@ function NameControl() {
 
 
 
-function scorBoardRefresh(name) {
+
+
+function scorBoardRefresh() {
+
   $('#playerScores').html('');
 
-  channel.trigger("client-user", {
-    name: name,
-    img: preview ? imageUrl: null,
-  });
   // Kullanıcıları HTML'e ekle
-  Kullanicilar.push({name: name, img: preview ? preview.src: null});
-
-  Kullanicilar.forEach((user) => {
-    $('#playerScores').append(`
-      
-    <div class="player ${Theme}">
-      <div class="col ${Theme}">
-          <div class="user-icon ${user.img ? `` : `user-icon-line`} ${Theme}">
-          ${user.img ? 
-            `<img id='Profil' src="${user.img}" alt="User Image">` 
-            : 
-            `<i class="fas fa-user ${Theme}"></i>`
-          }
-          </div>
+  if (Kullanicilar) {
+    Kullanicilar.forEach((user) => {
+      $('#playerScores').append(`
+        
+      <div class="player ${Theme}">
+        <div class="col ${Theme}">
+            <div class="user-icon ${user.img ? `` : `user-icon-line`} ${Theme}">
+            ${user.img ? 
+              `<img id='Profil' src="${user.img}" alt="User Image">` 
+              : 
+              `<i class="fas fa-user ${Theme}"></i>`
+            }
+            </div>
+        </div>
+        <div class="col-9 ${Theme}">
+          <div class="playerPuan ${Theme}"><p><b>${user.name}</b></p><p id='Puan' class='${Theme}'>Puan: <span class='${Theme}'>0</span></p></div>
+        </div>
       </div>
-      <div class="col-9 ${Theme == 'dark-mode' ? 'dark-mode' : ''}">
-        <div class="playerPuan ${Theme}"><p><b>${user.name}</b></p><p id='Puan' class='${Theme}'>Puan: <span class='${Theme}'>0</span></p></div>
-      </div>
-    </div>
-    `);
-  });
+      `);
+    });
+  }
   
 }
 
@@ -294,7 +346,6 @@ function nameSave(PersonName) {
   if (preview) {
     PersoneNameSave.PersoneImg = preview.src;
   }
-
   localStorage.setItem('PersoneNameSave', JSON.stringify(PersoneNameSave));
 }
 

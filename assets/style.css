@@ -272,6 +272,7 @@ input[type="file"] {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     width: 100%;
     transition: background-color 0.3s ease;
+    overflow-x: hidden;
 }
 
 .player.dark-mode {
@@ -513,13 +514,20 @@ input[type="file"] {
     }
 }
 
+.player .col-9 .playerPuan p{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.player .col-9 .playerPuan #Puan{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 @media screen and (max-width: 700px){
     /* İsim sığmassa ... koy */
-    .player .col-9 .playerPuan p{
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
 }
 
 @media screen and (max-width: 768px) and (min-width: 540px) {
