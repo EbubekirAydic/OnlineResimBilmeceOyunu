@@ -3,6 +3,7 @@ let preview; //Görsel önizleme
 let imageUrl; // Görsel URL'si
 let Kullanicilar = []; // Kullanıcılar dizisi
 var channel;
+let MyId;
 
 // HTML'e eklenen metinleri güvenli hale getirmek için fonksiyon
 function escapeOutput(toOutput){
@@ -26,8 +27,13 @@ $(document).ready(function() {
   // Kanal oluştur
   channel = pusher.subscribe("private-channel");
     
-  // Kanaldan gelen mesajları yazdır
-  channel.bind("client-ChatMessage", (data) => {
+
+
+
+
+
+// Kanaldan gelen mesajları yazdır
+channel.bind("client-ChatMessage", (data) => {
     console.log(data);
         
     message = escapeOutput(data.message);
@@ -50,38 +56,6 @@ $(document).ready(function() {
 
 });
 
-//Birisi sunucuda var mı diye sor Varsa host olmasın ve host onu eklesin
-channel.bind("client-Is-there-anyone", (data) => {
-  console.log('');
-  console.log('Gelen kullanıcı:');
-  console.log(data);
-  //biri yoksa zaten burası çalışmayacak
-
-  if (Kullanicilar[0] && $('#myName').val()) {
-    if (Kullanicilar[0].name == $('#myName').val()) {
-      console.log('Ben hostum');
-    
-      Kullanicilar.push({name: data.name, img: data.img});
-    
-      console.log(Kullanicilar);
-
-      channel.trigger("client-user", {
-        KullanicilarM: Kullanicilar,
-      });
-    
-      scorBoardRefresh();
-    }
-  }
-
-});
-
-//kanaldan gelen kullanıcıları ekle ve yazdır
-channel.bind("client-user", (data) => {
-  console.log(data);
-  Kullanicilar = data.KullanicilarM;
-  scorBoardRefresh();
-});
-  
 $('#myMessage').keydown(function(event) {
   if ($('#myMessage')) {
     
@@ -101,15 +75,116 @@ $('#mySendMessage').keydown(function(event) {
 
 
 
+
+
+
+
+
+//KULLANICI GİRİŞİ VE ÇIKIŞI İŞLEMLERİ--------------------------------------------
+
+//Birisi sunucuda var mı diye sor ve host varsa host onu kullanicilar'a eklesin
+//Oyunda biri yoksa zaten burası çalışmayacak
+channel.bind("client-Is-there-anyone", (data) => {
+  console.log('---------------------------------');
+  console.log('Gelen kullanıcı:');
+  console.log(data);
+
+  if (Kullanicilar[0] && $('#myName').val()) {
+    if (Kullanicilar[0].name == $('#myName').val()) {
+      console.log('Ben hostum');
+
+      Kullanicilar.push({name: data.name, img: data.img, id: Kullanicilar.length});
+
+      //Eğer aynı isimde başka bir kullanıcı varsa oyuna giremez
+      if (Kullanicilar.find((user) => user.name === data.name)) {
+        console.log('Bu isimde bir kullanıcı var!');
+
+        channel.trigger("client-user-left-game", {
+          name: data.name,
+          id : Kullanicilar.length,
+        });
+
+        Kullanicilar = Kullanicilar.filter((user) => user.name !== data.name);
+      }
+    
+      console.log('Kullanıcılar:');
+      console.log(Kullanicilar);
+
+      channel.trigger("client-user", {
+        KullanicilarM: Kullanicilar,
+      });
+    
+      scorBoardRefresh();
+    }else{
+      console.log('Ben host değilim!');
+    }
+  }else{
+    console.log('Ben oyunda değilim!');
+  }
+  console.log('---------------------------------');
 });
 
+//Aynı isimde kullanıcı varsa o kişi oyuna giremez
+channel.bind("client-user-left-game", (data) => {
+  console.log('---------------------------------');
+  console.log('Oyundan giremeyen kullanıcı:');
+  console.log(data);
 
-/* window.addEventListener("beforeunload", (event) => {
-  channel.trigger("user-left", {
-    name: $('#myName').val(),
-    img: preview ? imageUrl: null,
-  });
-}); */
+  if (data.name === $('#myName').val() && data.id === Kullanicilar.length) {
+    console.log('Benim ismim!');
+    GoToFunction('AnaMenu');
+    alert('Bu isimde bir kullanıcı var! Lütfen başka bir isim giriniz.');
+  }
+
+  console.log('---------------------------------');
+}
+);
+
+
+
+//Host gelen kullanıcıyı diğer kullanıcılara ekletip ve yazdırması işlemi
+channel.bind("client-user", (data) => {
+  console.log(data);
+  Kullanicilar = data.KullanicilarM;
+  scorBoardRefresh();
+});
+  
+
+
+//Kullanıcı siteden çıkarsa
+channel.bind("client-user-left", (data) => {
+  console.log('---------------------------------');
+  console.log('Kullanıcı çıktı:');
+  console.log(data);
+  
+  if (Kullanicilar[0] && $('#myName').val()) {
+    if (Kullanicilar[0].name == $('#myName').val()) {
+      console.log('Ben hostum!');
+      console.log('Eski Kullanıcılar:');
+      console.log(Kullanicilar);
+
+      Kullanicilar = Kullanicilar.filter((user) => user.name !== data.name);
+
+      console.log('Yeni Kullanıcılar:');
+      console.log(Kullanicilar);
+
+      channel.trigger("client-user", {
+        KullanicilarM: Kullanicilar,
+      });
+    }else{
+      console.log('Ben host değilim!');
+    }
+  }else{
+    console.log('Ben oyunda değilim!');
+  }
+
+  scorBoardRefresh();
+  console.log('---------------------------------');
+}
+);
+
+//------------------------------------------------------
+});
 
 
 
@@ -183,17 +258,16 @@ function SendMessage(messageInput,messageDiv,ServerName,IsServer,ServerMessage) 
 
 //------------------------------------------------------
 function GoToFunction(Open){
-  const elements = document.getElementsByClassName("Menus");
 
   // Döngüyle elemanlara erişme
-  for (let i = 0; i < elements.length; i++) {
-        elements[i].classList.add("close");
-        elements[i].classList.remove('d-flex');
-  }
-  document.getElementById(Open).classList.remove("close");
+  $(".Menus").each(function() {
+    $(this).addClass("close").removeClass("d-flex");
+  });
 
-  if (document.getElementById(Open).id == 'OdaKurKat') {
-    document.getElementById(Open).classList.add('d-flex');
+  $(`#${Open}`).removeClass("close");
+
+  if ($(`#${Open}`).attr('id') === 'OdaKurKat') {
+    $(`#${Open}`).addClass('d-flex');
   }
 }
 
@@ -207,7 +281,7 @@ document.getElementById("fileInput").addEventListener("change", function(event) 
           preview = document.getElementById("previewImage");
           preview.src = e.target.result;
           preview.style.display = "block";
-
+          uploadImage(preview.src); // Görseli yükleme ve URL'sini almak için fonksiyonu çağır
       };
       reader.readAsDataURL(file);
   }
@@ -243,13 +317,10 @@ function NameControl() {
 
   console.log('Kullanıcı isminde sorun Yok: '+PersonName);
   nameSave(PersonName);
-  if (preview){
-    uploadImage(preview.src); // Görseli yükleme ve URL'sini almak için fonksiyonu çağır
-  }
-
-  NewUser(PersonName);
 
   GoToFunction('GameMenu');
+
+  NewUser(PersonName);
 }
 
 
@@ -258,11 +329,12 @@ function NameControl() {
 
 
 function NewUser(NewUserName) {
+  console.log(imageUrl);
 
   // Kendini host olarak tanıt
-  Kullanicilar.push({name: NewUserName, img: preview ? imageUrl: null});
+  Kullanicilar.push({name: NewUserName, img: preview ? imageUrl: null, id: 1});
   scorBoardRefresh();
-  
+      
   //--------------------------------------------------------------------------------
   //eğer sunucuda biri varsa kendi bilgilerini gönder ve hostluktan çık
   channel.trigger("client-Is-there-anyone", {
@@ -273,6 +345,15 @@ function NewUser(NewUserName) {
 
 
 
+
+
+
+// Sayfadan ayrılınca kullanıcıyı çıkart
+window.addEventListener("beforeunload", function () {
+  channel.trigger("client-user-left", {
+    name: $('#myName').val(),
+  });
+});
 
 
 
@@ -334,6 +415,7 @@ if (localStorage.getItem('PersoneNameSave')) {
     preview = document.getElementById("previewImage");
     preview.src = PersoneNameSave.PersoneImg;
     preview.style.display = "block";
+    uploadImage(preview.src); // Görseli yükleme ve URL'sini almak için fonksiyonu çağır
   }
 
   $('#myName').val(PersoneNameSave.PersoneName);
