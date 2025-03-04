@@ -34,26 +34,48 @@ $(document).ready(function() {
 
 // Kanaldan gelen mesajları yazdır
 channel.bind("client-ChatMessage", (data) => {
+    console.log('?-----client-ChatMessage------?');
+
     console.log(data);
-        
-    message = escapeOutput(data.message);
+
+    if (data.name == 'Server78901234567890') {
+      message = data.message;
+    }else{
+      message = escapeOutput(data.message);
+    }
     name = escapeOutput(data.name);
     img = data.img;
     messageDiv = data.massageDiv;
+    
+    setupChatScroll(`#${messageDiv}`);
+    mesajEkle(`#${messageDiv}`);
         
+    console.error('Mesaj 3 gönderiliyor');
     $(`#${messageDiv}`).append(`
-      <div class="message">
-          <div class="user-icon ${img ? `` : `user-icon-line`}">
-          ${img ? 
-            `<img src="${img}" alt="User Image" style="width: 30px; height: 30px; border-radius: 50%;">` 
-            : 
-            `<i class="fas fa-user"></i>`
+      <div class="message ${data.name == 'Server78901234567890' ? 'ServerMessage' : ''}">
+          ${data.img == 'serverImg' ?
+             ``
+             : 
+             `<div class="user-icon ${img ? `` : `user-icon-line`}">
+             ${img ? 
+              `<img src="${img}" alt="User Image" style="width: 30px; height: 30px; border-radius: 50%;">` 
+              : 
+              `<i class="fas fa-user"></i>`
+            }
+
+              </div>`
           }
-          </div>
-          <div class="text"><b>${name}</b> : ${message}</div>
+          <div class="text">
+          ${data.name == 'Server78901234567890' ? 
+            message
+            :
+            `<b id='NameColor${data.HeId}'>${name}</b> : ${message}</div>`
+          }
       </div>
     `);
 
+    console.log('*---------------------------------*');
+    console.warn('');
 });
 
 $('#myMessage').keydown(function(event) {
@@ -85,66 +107,123 @@ $('#mySendMessage').keydown(function(event) {
 //Birisi sunucuda var mı diye sor ve host varsa host onu kullanicilar'a eklesin
 //Oyunda biri yoksa zaten burası çalışmayacak
 channel.bind("client-Is-there-anyone", (data) => {
-  console.log('---------------------------------');
-  console.log('Gelen kullanıcı:');
-  console.log(data);
+  console.log('?-----client-Is-there-anyone------?');
 
   if (Kullanicilar[0] && $('#myName').val()) {
     if (Kullanicilar[0].name == $('#myName').val()) {
-      console.log('Ben hostum');
-
-      Kullanicilar.push({name: data.name, img: data.img, id: Kullanicilar.length});
+      console.log('--------Ben hostum--------');
+      console.log('Gelen kullanıcı:');
+      console.log(data);
 
       //Eğer aynı isimde başka bir kullanıcı varsa oyuna giremez
-      if (Kullanicilar.find((user) => user.name === data.name)) {
-        console.log('Bu isimde bir kullanıcı var!');
+        if (Kullanicilar.find(user => user.name === data.name)) {
+          console.log('Bu isimde bir kullanıcı var!');
 
-        channel.trigger("client-user-left-game", {
-          name: data.name,
-          id : Kullanicilar.length,
-        });
+          channel.trigger("client-user-left-game", {
+            name: data.name,
+            id : Kullanicilar.length,
+          });
 
-        Kullanicilar = Kullanicilar.filter((user) => user.name !== data.name);
-      }
+        }else{
+          Kullanicilar.push({name: data.name, img: data.img, id: Kullanicilar.length + 1});
+
+          console.log('Kullanıcılar:');
+          console.log(Kullanicilar);
+
+          console.error('Mesaj 1 gönderiliyor');
+          
+          SendMessage('mySendMessage', 'send-messages', true, `Sunucuya <b id='NameColor${Kullanicilar.length}'>${data.name}</b> katıldı!`);
+
+          channel.trigger("client-user", {
+            KullanicilarM: Kullanicilar,
+          });
+
+          scorBoardRefresh();
+        }
+        
     
-      console.log('Kullanıcılar:');
-      console.log(Kullanicilar);
-
-      channel.trigger("client-user", {
-        KullanicilarM: Kullanicilar,
-      });
-    
-      scorBoardRefresh();
     }else{
       console.log('Ben host değilim!');
     }
   }else{
     console.log('Ben oyunda değilim!');
   }
-  console.log('---------------------------------');
+  console.log('*---------------------------------*');
+  console.warn('');
 });
+
+
+
+
+
+
+
+//kullanıcı girdiği zaman chata yazdırma işlemi
+channel.bind("client-AddMessageUser", (data) => {
+  console.log('?-----client-AddMessageUser------?');
+  console.log('Gelen kullanıcı:');
+  console.log(data);
+
+  console.error('Mesaj 2 gönderiliyor');
+
+  console.log('*---------------------------------*');
+  console.warn('');
+});
+
+
+
+
+
+
+
+
 
 //Aynı isimde kullanıcı varsa o kişi oyuna giremez
 channel.bind("client-user-left-game", (data) => {
-  console.log('---------------------------------');
-  console.log('Oyundan giremeyen kullanıcı:');
+  console.log('?-----client-user-left-game------?');
+  console.log('Oyuna giremeyen kullanıcı:');
   console.log(data);
 
-  if (data.name === $('#myName').val() && data.id === Kullanicilar.length) {
-    console.log('Benim ismim!');
+  if (MyId == 1) {
+    console.error('Sen host değilsin O yüzden çıkan kişi sensin! : '+data.name);
     GoToFunction('AnaMenu');
-    alert('Bu isimde bir kullanıcı var! Lütfen başka bir isim giriniz.');
+    showWarning("Bu isimde bir kullanıcı var! Oyuna giremezsiniz.");
   }
 
-  console.log('---------------------------------');
+  console.log('*---------------------------------*');
+  console.warn('');
 }
 );
+
+
+
+
+
+
 
 
 
 //Host gelen kullanıcıyı diğer kullanıcılara ekletip ve yazdırması işlemi
 channel.bind("client-user", (data) => {
   console.log(data);
+
+  //kullanıcıların hepsine id ver
+  if (MyId == undefined) {
+    return;
+  }
+  data.KullanicilarM.forEach((user) => {
+    console.log('Benim id:'+MyId);
+    console.log(user);
+    console.log(user+' id: '+user.id);
+
+    if (user.name == $('#myName').val()) {
+      MyId = user.id;
+    }
+
+    console.log('Benim id:'+MyId);
+
+  });
+
   Kullanicilar = data.KullanicilarM;
   scorBoardRefresh();
 });
@@ -153,7 +232,7 @@ channel.bind("client-user", (data) => {
 
 //Kullanıcı siteden çıkarsa
 channel.bind("client-user-left", (data) => {
-  console.log('---------------------------------');
+  console.log('?--------client-user-left--------?');
   console.log('Kullanıcı çıktı:');
   console.log(data);
   
@@ -171,6 +250,11 @@ channel.bind("client-user-left", (data) => {
       channel.trigger("client-user", {
         KullanicilarM: Kullanicilar,
       });
+      channel.trigger("client-RemoveMessageUser", {
+        name: data.name,
+        message: 'Sunucudan '+data.name+' ayrıldı!',
+        massageDiv: 'chat-messages',
+      });
     }else{
       console.log('Ben host değilim!');
     }
@@ -179,7 +263,8 @@ channel.bind("client-user-left", (data) => {
   }
 
   scorBoardRefresh();
-  console.log('---------------------------------');
+  console.log('*---------------------------------*');
+  console.warn('');
 }
 );
 
@@ -192,63 +277,60 @@ channel.bind("client-user-left", (data) => {
 
 
 
-function SendMessage(messageInput,messageDiv,ServerName,IsServer,ServerMessage) {
+function SendMessage(messageInput,messageDiv,IsServer,ServerMessage) {
 
-  if (!escapeOutput($(`#${messageInput}`).val()) == '') {
-
-  setupChatScroll(`#${messageDiv}`);
-  mesajEkle(`#${messageDiv}`);
-
-
-
-  channel.trigger("client-ChatMessage", {
-    name: $('#myName').val(),
-    message: $(`#${messageInput}`).val(),
-    img: preview ? imageUrl: null,
-    massageDiv: messageDiv,
-  });
-
-  
   if (IsServer) {
-    ServerName = escapeOutput($('#myName').val());
-    ServerMessage = escapeOutput($('#myMessage').val());
-    $(`#${messageDiv}`).prepend(`
-                  <div class="message">
-                      <div class="user-icon">
-                          <i class="fas fa-user"></i>
-                      </div>
-                      <div class="text"><b>${ServerName}</b> : ${ServerMessage}</div>
-                  </div>`);
-    
-    $(`#${messageInput}`).val('')
-  }else{
-            
-    // Mesajı HTML'e ekle
-    name = escapeOutput($('#myName').val());
-    message = escapeOutput($(`#${messageInput}`).val());
-    if (preview) {
-      img = preview.src;
-    }else{
-      img = null
-    }
+    setupChatScroll(`#${messageDiv}`);
+    mesajEkle(`#${messageDiv}`);
 
+    channel.trigger("client-ChatMessage", {
+      name: 'Server78901234567890',
+      message: ServerMessage,
+      img: 'serverImg',
+      massageDiv: 'chat-messages',
+    });
+
+    $(`#chat-messages`).append(`
+                  <div class="message ServerMessage">
+                      <div class="text">${ServerMessage}</div>
+                  </div>`);
+  }else{
+    if (!escapeOutput($(`#${messageInput}`).val()) == '') {
+
+      setupChatScroll(`#${messageDiv}`);
+      mesajEkle(`#${messageDiv}`);
       
-    $(`#${messageDiv}`).append(`
-                <div class="message">
-                    <div class="user-icon ${img ? `` : `user-icon-line`}">
-                    ${img ? 
-                      `<img src="${img}" alt="User Image" style="width: 30px; height: 30px; border-radius: 50%;">` 
-                      : 
-                      `<i class="fas fa-user"></i>`
-                    }
-                    </div>
-                    <div class="text"><b>${name}</b> : ${message}</div>
-                </div>
-            `);
+      channel.trigger("client-ChatMessage", {
+        name: $('#myName').val(),
+        message: $(`#${messageInput}`).val(),
+        img: preview ? imageUrl: null,
+        massageDiv: messageDiv,
+        HeId: MyId,
+      });
+
+      // Mesajı HTML'e ekle
+      name = escapeOutput($('#myName').val());
+      message = escapeOutput($(`#${messageInput}`).val());
+      preview ? img = preview.src : img = null;
+
+        
+      $(`#${messageDiv}`).append(`
+                  <div class="message">
+                      <div class="user-icon ${img ? `` : `user-icon-line`}">
+                      ${img ? 
+                        `<img src="${img}" alt="User Image" style="width: 30px; height: 30px; border-radius: 50%;">` 
+                        : 
+                        
+                        `<i class="fas fa-user"></i>`
+                      }
+                      </div>
+                      <div class="text"><row><b id='NameColor${MyId}' class='col-12'>${name}</b><div class='col-12'>${message}</div></div>
+                  </div>
+              `);
     }
+    $(`#${messageInput}`).val('')
   };
 
-  $(`#${messageInput}`).val('')
 }
 
 
@@ -316,11 +398,13 @@ function NameControl() {
   }
 
   console.log('Kullanıcı isminde sorun Yok: '+PersonName);
+  console.warn('');
   nameSave(PersonName);
 
-  GoToFunction('GameMenu');
-
   NewUser(PersonName);
+
+  //0.5 saniye sonra odaya git
+  GoToFunction('GameMenu');
 }
 
 
@@ -329,10 +413,10 @@ function NameControl() {
 
 
 function NewUser(NewUserName) {
-  console.log(imageUrl);
-
   // Kendini host olarak tanıt
   Kullanicilar.push({name: NewUserName, img: preview ? imageUrl: null, id: 1});
+  MyId = 1;
+
   scorBoardRefresh();
       
   //--------------------------------------------------------------------------------
@@ -351,7 +435,7 @@ function NewUser(NewUserName) {
 // Sayfadan ayrılınca kullanıcıyı çıkart
 window.addEventListener("beforeunload", function () {
   channel.trigger("client-user-left", {
-    name: $('#myName').val(),
+    name: escapeOutput($('#myName').val()),
   });
 });
 
@@ -374,7 +458,7 @@ function scorBoardRefresh() {
         
       <div class="player ${Theme}">
         <div class="col ${Theme}">
-            <div class="user-icon ${user.img ? `` : `user-icon-line`} ${Theme}">
+            <div class="user-icon user-icon-flex ${user.img ? `` : `user-icon-line`} ${Theme}">
             ${user.img ? 
               `<img id='Profil' src="${user.img}" alt="User Image">` 
               : 

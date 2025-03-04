@@ -201,6 +201,57 @@ input[type="file"] {
 
 
 
+/* Id numarasına göre renk */
+#NameColor1{
+    color: rgb(194, 48, 48);
+}
+#NameColor2{
+    color: rgb(35, 145, 35);
+}
+#NameColor3{
+    color: rgb(95, 95, 226);
+}
+#NameColor4{
+    color: rgb(145, 145, 35);
+}
+#NameColor5{
+    color: rgb(145, 35, 145);
+}
+#NameColor6{
+    color: rgb(35, 145, 145);
+}
+#NameColor7{
+    color: rgb(145, 145, 145);
+}
+#NameColor8{
+    color: rgb(35, 35, 35);
+}
+#NameColor9{
+    color: rgb(84, 166, 163);
+}
+#NameColor10{
+    color: rgb(204, 9, 178);
+}
+.ServerMessage{
+    font-family: 'Arial', sans-serif; /* Alternatif bir font */
+    font-weight: 500; /* Font kalınlığı */
+}
+.ServerMessage .text{
+    background-color: transparent;
+    font-family: 'Arial', sans-serif; /* Alternatif bir font */
+    font-weight: 500; /* Font kalınlığı */
+}
+
+
+
+
+
+
+
+
+
+
+
 /* Genel Konteyner */
 .container-fluid {
     display: flex;
@@ -414,12 +465,11 @@ input[type="file"] {
 
 .user-icon {
     background-color: #ddd;
-    display: flex;
+    display: inline-block;
     align-items: center;
     justify-content: center;
     color: #555;
 
-    display: inline-block;
     width: 30px;
     height: 30px;
     border-radius: 50%;
@@ -432,6 +482,12 @@ input[type="file"] {
     color: white;
 }
 
+.user-icon-flex{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .user-icon-line{
     line-height: 30px;
 }
@@ -440,11 +496,25 @@ input[type="file"] {
     display: inline-block;
     background-color: #333;
     padding: 8px;
+    padding-top: 0px;
+    padding-bottom: 6px;
+
     border-radius: 8px;
     color: white;
     font-size: 14px;
     max-width: calc(100% - 40px);
     word-wrap: break-word;
+    /* yazıların satır arası boşluk az olsun */
+    line-height: 1.2;
+}
+
+.text b{
+    font-size: 10px;
+    height: auto;
+}
+
+.text .row{
+    height: 100%;
 }
 
 .chat-input {
