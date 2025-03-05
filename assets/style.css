@@ -241,6 +241,10 @@ input[type="file"] {
     font-family: 'Arial', sans-serif; /* Alternatif bir font */
     font-weight: 500; /* Font kalınlığı */
 }
+.TransparentBack{
+    background-color: transparent !important;
+}
+
 
 
 
@@ -458,14 +462,19 @@ input[type="file"] {
 }
 
 .message {
-    margin-bottom: 5px;
+    margin-bottom: 10px;
     width: 100%;
-    display: inline-block;
+    display: inline-flex;
+}
+
+.user-icon-inline{
+    display: inline-flex;
+    height: 100%;
 }
 
 .user-icon {
     background-color: #ddd;
-    display: inline-block;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
     color: #555;
@@ -499,7 +508,9 @@ input[type="file"] {
     padding-top: 0px;
     padding-bottom: 6px;
 
-    border-radius: 8px;
+    margin-left: 5px;
+
+    border-radius: 5px;
     color: white;
     font-size: 14px;
     max-width: calc(100% - 40px);

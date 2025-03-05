@@ -69,8 +69,9 @@ channel.bind("client-ChatMessage", (data) => {
           ${data.name == 'Server78901234567890' ? 
             message
             :
-            `<b id='NameColor${data.HeId}'>${name}</b> : ${message}</div>`
+            `<b id='NameColor${data.HeId}' class='col-12'>${name}</b><div class='col-12'>${message}</div>`
           }
+          </div>
       </div>
     `);
 
@@ -129,14 +130,19 @@ channel.bind("client-Is-there-anyone", (data) => {
 
           console.log('Kullanıcılar:');
           console.log(Kullanicilar);
-
-          console.error('Mesaj 1 gönderiliyor');
           
-          SendMessage('mySendMessage', 'send-messages', true, `Sunucuya <b id='NameColor${Kullanicilar.length}'>${data.name}</b> katıldı!`);
+          SendMessage('mySendMessage', 'send-messages', true, `Sunucuya <b id='NameColor${Kullanicilar.length}'  style='font-size: 14px;'>${data.name}</b> katıldı!`);
+
+          console.log(Kullanicilar.length);
+          /* for (let i = 0; i < Kullanicilar.length; i++) {
+           // Kullanicilar.push({name:Kullanicilar[i].name, img: Kullanicilar[i].img, id: i+1});
+          } */
 
           channel.trigger("client-user", {
             KullanicilarM: Kullanicilar,
           });
+
+          
 
           scorBoardRefresh();
         }
@@ -207,24 +213,35 @@ channel.bind("client-user-left-game", (data) => {
 channel.bind("client-user", (data) => {
   console.log(data);
 
+  Kullanicilar = data.KullanicilarM;
+
   //kullanıcıların hepsine id ver
   if (MyId == undefined) {
     return;
   }
-  data.KullanicilarM.forEach((user) => {
-    console.log('Benim id:'+MyId);
-    console.log(user);
-    console.log(user+' id: '+user.id);
 
+  for (let i = 0; i < Kullanicilar.length; i++) {
+    let user = Kullanicilar[i]
+
+    console.log('Benim ilk id:'+MyId);
+    console.log(user);
+    console.log('id: '+ (i + 1));
+    console.log((i + 1));
+    console.log(i + 1);
+    console.log(user.name, $('#myName').val());
+    console.log(user.name == $('#myName').val())
+    
     if (user.name == $('#myName').val()) {
-      MyId = user.id;
+      MyId =  i + 1;
     }
 
     console.log('Benim id:'+MyId);
+    console.log('--------------------------');
 
-  });
+    Kullanicilar.push({name:Kullanicilar[i].name, img: Kullanicilar[i].img, id: i+1});
+  }
 
-  Kullanicilar = data.KullanicilarM;
+  
   scorBoardRefresh();
 });
   
@@ -243,6 +260,8 @@ channel.bind("client-user-left", (data) => {
       console.log(Kullanicilar);
 
       Kullanicilar = Kullanicilar.filter((user) => user.name !== data.name);
+
+      SendMessage('mySendMessage', 'send-messages', true, `<b id='NameColor${data.id}'  style='font-size: 14px;'>${data.name}</b> <b style='color: red; font-size: 14px;'>sunucudan ayrıldı!</b>`);
 
       console.log('Yeni Kullanıcılar:');
       console.log(Kullanicilar);
@@ -316,15 +335,14 @@ function SendMessage(messageInput,messageDiv,IsServer,ServerMessage) {
         
       $(`#${messageDiv}`).append(`
                   <div class="message">
-                      <div class="user-icon ${img ? `` : `user-icon-line`}">
+                      <div class="user-icon ${img ? `TransparentBack` : `user-icon-line`}">
                       ${img ? 
-                        `<img src="${img}" alt="User Image" style="width: 30px; height: 30px; border-radius: 50%;">` 
-                        : 
-                        
+                        `<img src="${img}" alt="User Image" style="width: 30px; height: 30px; border-radius: 50%;">`
+                        :
                         `<i class="fas fa-user"></i>`
                       }
                       </div>
-                      <div class="text"><row><b id='NameColor${MyId}' class='col-12'>${name}</b><div class='col-12'>${message}</div></div>
+                      <div class="text"><b id='NameColor${MyId}' class='col-12'>${name}</b><div class='col-12'>${message}</div></div>
                   </div>
               `);
     }
@@ -436,6 +454,7 @@ function NewUser(NewUserName) {
 window.addEventListener("beforeunload", function () {
   channel.trigger("client-user-left", {
     name: escapeOutput($('#myName').val()),
+    id: MyId,
   });
 });
 
@@ -467,7 +486,7 @@ function scorBoardRefresh() {
             </div>
         </div>
         <div class="col-9 ${Theme}">
-          <div class="playerPuan ${Theme}"><p><b>${user.name}</b></p><p id='Puan' class='${Theme}'>Puan: <span class='${Theme}'>0</span></p></div>
+          <div class="playerPuan ${Theme}"><p><b id='NameColor${user.id}'>${user.name}</b></p><p id='Puan' class='${Theme}'>Puan: <span class='${Theme}'>0</span></p></div>
         </div>
       </div>
       `);
@@ -489,7 +508,7 @@ function scorBoardRefresh() {
 // KAYITLI İSİM VE GÖRSELİ YÜKLEME VE KAYDETME
 
 // Kayıtlı isim ve görseli yükle
-let PersoneNameSave = {PersoneName : '',PersoneImg : ''};
+let PersoneNameSave = {PersoneName : '',PersoneImg : '',imageUrl : ''};
 
 if (localStorage.getItem('PersoneNameSave')) {
   PersoneNameSave = JSON.parse(localStorage.getItem('PersoneNameSave'));
@@ -499,7 +518,10 @@ if (localStorage.getItem('PersoneNameSave')) {
     preview = document.getElementById("previewImage");
     preview.src = PersoneNameSave.PersoneImg;
     preview.style.display = "block";
-    uploadImage(preview.src); // Görseli yükleme ve URL'sini almak için fonksiyonu çağır
+  }
+
+  if (PersoneNameSave.imageUrl) {
+    imageUrl = PersoneNameSave.imageUrl;
   }
 
   $('#myName').val(PersoneNameSave.PersoneName);
@@ -507,11 +529,17 @@ if (localStorage.getItem('PersoneNameSave')) {
 
 // İsim ve görseli kaydet
 function nameSave(PersonName) {
-  PersoneNameSave.PersoneName = PersonName;
 
+  if (PersonName != undefined) {
+    PersoneNameSave.PersoneName = PersonName;
+  }
   if (preview) {
     PersoneNameSave.PersoneImg = preview.src;
   }
+  if (imageUrl) {
+    PersoneNameSave.imageUrl = imageUrl
+  }
+
   localStorage.setItem('PersoneNameSave', JSON.stringify(PersoneNameSave));
 }
 
@@ -749,7 +777,7 @@ async function uploadImage(previeW) {
   try {
     // ✅ Resmi ImgBB'ye yüklüyoruz
 
-    let response = await fetch("https://api.imgbb.com/1/upload?key=46f0d10cac42bc77a03315b676949a88", {
+    let response = await fetch("https://api.imgbb.com/1/upload?key=7cb37f14333869b93d591bc9e1fc0b44", {
       method: "POST",
       body: formData
     });
@@ -761,6 +789,9 @@ async function uploadImage(previeW) {
     }
 
     imageUrl = result.data.url;
+    console.log('resminiz başarıyla bir kere yedeklendi');
+    console.log(imageUrl);
+    nameSave();
 
     // 📌 Resmi Pusher ile gönder
 
