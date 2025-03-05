@@ -134,9 +134,6 @@ channel.bind("client-Is-there-anyone", (data) => {
           SendMessage('mySendMessage', 'send-messages', true, `Sunucuya <b id='NameColor${Kullanicilar.length}'  style='font-size: 14px;'>${data.name}</b> katıldı!`);
 
           console.log(Kullanicilar.length);
-          /* for (let i = 0; i < Kullanicilar.length; i++) {
-           // Kullanicilar.push({name:Kullanicilar[i].name, img: Kullanicilar[i].img, id: i+1});
-          } */
 
           channel.trigger("client-user", {
             KullanicilarM: Kullanicilar,
@@ -211,35 +208,22 @@ channel.bind("client-user-left-game", (data) => {
 
 //Host gelen kullanıcıyı diğer kullanıcılara ekletip ve yazdırması işlemi
 channel.bind("client-user", (data) => {
-  console.log(data);
 
   Kullanicilar = data.KullanicilarM;
 
   //kullanıcıların hepsine id ver
-  if (MyId == undefined) {
-    return;
-  }
+  if (MyId == undefined) { return;}
+  if (!Kullanicilar) { return;}
+  if (Kullanicilar.length == 0) { return;}
 
-  for (let i = 0; i < Kullanicilar.length; i++) {
-    let user = Kullanicilar[i]
 
-    console.log('Benim ilk id:'+MyId);
-    console.log(user);
-    console.log('id: '+ (i + 1));
-    console.log((i + 1));
-    console.log(i + 1);
-    console.log(user.name, $('#myName').val());
-    console.log(user.name == $('#myName').val())
-    
-    if (user.name == $('#myName').val()) {
-      MyId =  i + 1;
-    }
+    $.each(Kullanicilar, function(index, user) {
+      console.log(user.id);
 
-    console.log('Benim id:'+MyId);
-    console.log('--------------------------');
-
-    Kullanicilar.push({name:Kullanicilar[i].name, img: Kullanicilar[i].img, id: i+1});
-  }
+      if (user.name == $('#myName').val()) {
+      MyId = user.id;
+      }
+    });
 
   
   scorBoardRefresh();
@@ -261,6 +245,11 @@ channel.bind("client-user-left", (data) => {
 
       Kullanicilar = Kullanicilar.filter((user) => user.name !== data.name);
 
+      // Kullanıcıların id'lerini yeniden düzenle
+      Kullanicilar.forEach((user, index) => {
+        user.id = index + 1;
+      });
+
       SendMessage('mySendMessage', 'send-messages', true, `<b id='NameColor${data.id}'  style='font-size: 14px;'>${data.name}</b> <b style='color: red; font-size: 14px;'>sunucudan ayrıldı!</b>`);
 
       console.log('Yeni Kullanıcılar:');
@@ -268,11 +257,6 @@ channel.bind("client-user-left", (data) => {
 
       channel.trigger("client-user", {
         KullanicilarM: Kullanicilar,
-      });
-      channel.trigger("client-RemoveMessageUser", {
-        name: data.name,
-        message: 'Sunucudan '+data.name+' ayrıldı!',
-        massageDiv: 'chat-messages',
       });
     }else{
       console.log('Ben host değilim!');
@@ -284,8 +268,37 @@ channel.bind("client-user-left", (data) => {
   scorBoardRefresh();
   console.log('*---------------------------------*');
   console.warn('');
-}
-);
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Resim çizme
+channel.bind('client-drawing', function(data) {
+  const { drawing } = data;
+
+  ctx1.beginPath();
+  drawing.forEach(point => {
+    if (point.type === "start") {
+      ctx1.moveTo(point.x, point.y);
+    } else {
+      ctx1.lineTo(point.x, point.y);
+      ctx1.stroke();
+    }
+  });
+  ctx1.closePath();
+});
+
 
 //------------------------------------------------------
 });
@@ -573,44 +586,6 @@ function chatChange(chatName,button) {
 
 
 
-    // Canvasları ve Context'leri al
-    const canvas1 = document.getElementById("drawingCanvasPc");
-    const ctx1 = canvas1.getContext("2d");
-
-    let isDrawing = false;
-
-    function startDrawing(e, canvas, ctx, targetCtx) {
-        isDrawing = true;
-        draw(e, canvas, ctx, targetCtx);
-    }
-
-    function stopDrawing() {
-        isDrawing = false;
-        ctx1.beginPath();
-    }
-
-    function draw(e, canvas, ctx, targetCtx) {
-        if (!isDrawing) return;
-
-        const rect = canvas.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-
-        // Çizimi yapan canvas
-        ctx.lineWidth = 3;
-        ctx.lineCap = "round";
-        ctx.strokeStyle = "black";
-        ctx.lineTo(x, y);
-        ctx.stroke();
-        ctx.beginPath();
-        ctx.moveTo(x, y);
-    }
-
-    // Canvas 1 olayları
-    canvas1.addEventListener("mousedown", (e) => startDrawing(e, canvas1, ctx1));
-    canvas1.addEventListener("mouseup", stopDrawing);
-    canvas1.addEventListener("mousemove", (e) => draw(e, canvas1, ctx1));
-
 
 
 
@@ -757,7 +732,6 @@ themeToggleButton.addEventListener('click', () => {
 
 
 // Resmi Base64 olarak yükleme ve gönderme
-
 async function uploadImage(previeW) {
 
   let file = previeW ? previeW : null;
@@ -810,3 +784,107 @@ async function uploadImage(previeW) {
 
 
 
+
+
+
+
+
+const canvas1 = document.getElementById("drawingCanvasPc");
+const ctx1 = canvas1.getContext("2d");
+
+let isDrawing = false;
+let currentDrawing = []; // Çizilen noktaları sakla
+const MAX_POINTS = 20; // 🔥 20 noktada bir veri gönderelim
+
+ctx1.lineWidth = 3; // Çizgi kalınlığı
+
+// Çizim verisini Pusher'a gönder
+function sendDrawingData(drawing) {
+  if (drawing.length === 0) return;
+
+  try {
+    channel.trigger('client-drawing', { drawing });
+    console.log("Çizim verisi gönderildi:", drawing);
+  } catch (error) {
+    console.error("Pusher gönderim hatası:", error);
+  }
+}
+
+// Çizim başladığında
+function startDrawing(e) {
+  e.preventDefault();
+  isDrawing = true;
+  currentDrawing = [];
+
+  const pos = getMousePos(e);
+  if (!pos) {
+    stopDrawing(e);
+    return;
+  }
+
+  currentDrawing.push({ x: pos.x, y: pos.y, type: "start" });
+
+  ctx1.beginPath();
+  ctx1.moveTo(pos.x, pos.y);
+}
+
+// Çizim durduğunda
+function stopDrawing(e) {
+  e.preventDefault();
+  isDrawing = false;
+
+  // Çizimi Pusher'a gönder
+  sendDrawingData(currentDrawing);
+  ctx1.closePath();
+}
+
+// Çizim yapılırken
+function draw(e) {
+  if (!isDrawing) return;
+  e.preventDefault();
+
+  const pos = getMousePos(e);
+  if (!pos) {
+    stopDrawing(e);
+    return;
+  }
+
+  currentDrawing.push({ x: pos.x, y: pos.y, type: "line" });
+
+  ctx1.lineTo(pos.x, pos.y);
+  ctx1.stroke();
+  ctx1.beginPath();
+  ctx1.moveTo(pos.x, pos.y);
+
+  // 🔥 20 noktada bir Pusher'a veri gönderelim
+  if (currentDrawing.length >= MAX_POINTS) {
+    sendDrawingData(currentDrawing);
+    currentDrawing = [{ x: pos.x, y: pos.y, type: "start" }]; // Yeni çizim başlat
+  }
+}
+
+// Mouse veya parmak konumunu al
+function getMousePos(e) {
+  const rect = canvas1.getBoundingClientRect();
+  const scaleX = canvas1.width / rect.width;
+  const scaleY = canvas1.height / rect.height;
+
+  let clientX = e.clientX || (e.touches && e.touches[0]?.clientX);
+  let clientY = e.clientY || (e.touches && e.touches[0]?.clientY);
+
+  if (clientX == null || clientY == null) return null;
+
+  return {
+    x: (clientX - rect.left) * scaleX,
+    y: (clientY - rect.top) * scaleY
+  };
+}
+
+// Olay dinleyicileri
+canvas1.addEventListener("mousedown", startDrawing);
+canvas1.addEventListener("mouseup", stopDrawing);
+canvas1.addEventListener("mousemove", draw);
+
+canvas1.addEventListener("touchstart", startDrawing);
+canvas1.addEventListener("touchend", stopDrawing);
+canvas1.addEventListener("touchmove", draw);

@@ -10,6 +10,33 @@ html{
     overflow-x: hidden;
 }
 
+/* Scrollbar Genel Ayarlar */
+html::-webkit-scrollbar {
+    width: 6px !important; /* Kaydırma çubuğu genişliği */
+}
+
+/* Scrollbar Track (Arka plan) */
+html::-webkit-scrollbar-track {
+    background: #2e2e2e !important; /* Kaydırma arkaplan rengi */
+    border-radius: 10px !important;
+}
+
+/* Scrollbar Thumb (Kaydırma çubuğu) */
+html::-webkit-scrollbar-thumb {
+    background: #454545 !important; /* Kaydırma çubuğu rengi */
+    border-radius: 10px !important;
+}
+
+/* Scrollbar üzerine gelince renk değişimi */
+html::-webkit-scrollbar-thumb:hover {
+    background: #555 !important;
+}
+
+
+
+
+
+
 header{
     background-color: #f1eded;
     color: #2a2a2a;
@@ -749,7 +776,7 @@ input[type="file"] {
     :root {
         --header-height: 60px !important;
         --canvas-width: 100vw !important;
-        --canvas-height: calc(100vw* .584) !important;
+        --canvas-height: calc(100vw * 0.584) !important;
         --canvas-margin: 0 !important;
     }
     .canvas-container {
@@ -758,8 +785,8 @@ input[type="file"] {
         margin: var(--canvas-margin) !important;
     }
     #drawingCanvasPc {
-        width: var(--canvas-width) !important;
-        height: var(--canvas-height) !important;
+        width: 100% !important;
+        height: 100% !important;
     }
     
 .MyCenter{
