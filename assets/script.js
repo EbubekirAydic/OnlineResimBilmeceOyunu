@@ -840,6 +840,8 @@ function stopDrawing(e) {
 
 // Çizim yapılırken
 function draw(e) {
+  console.log(getMousePos(e));
+
   if (!isDrawing) return;
   e.preventDefault();
 
@@ -848,6 +850,7 @@ function draw(e) {
     stopDrawing(e);
     return;
   }
+
 
   currentDrawing.push({ x: pos.x, y: pos.y, type: "line" });
 
@@ -882,7 +885,8 @@ function getMousePos(e) {
 
 // Olay dinleyicileri
 canvas1.addEventListener("mousedown", startDrawing);
-canvas1.addEventListener("mouseup", stopDrawing);
+canvas1.addEventListener("mouseup", stopDrawing);// Mouse canvas'a girdiğinde
+canvas1.addEventListener("mouseleave", stopDrawing); 
 canvas1.addEventListener("mousemove", draw);
 
 canvas1.addEventListener("touchstart", startDrawing);

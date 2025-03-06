@@ -84,34 +84,38 @@
                     <tbody>
                         <tr>
                             <th scope="row">1</th>
-                            <td>PHP DOSYASI</td>
+                            <td>mustafa</td>
                         </tr>
                         <tr>
                             <th scope="row">2</th>
-                            <td>Resim dosyasını algılayıp onu güzel bir profile çevirmek</td>
+                            <td>PHP DOSYASI</td>
                         </tr>
                         <tr>
                             <th scope="row">3</th>
-                            <td>Resimi pusher ile diğer kullanıcılara AKTARMAK</td>
+                            <td>Resim dosyasını algılayıp onu güzel bir profile çevirmek</td>
                         </tr>
                         <tr>
                             <th scope="row">4</th>
-                            <td style="font-size: 50px;">CSS</td>
+                            <td>Resimi pusher ile diğer kullanıcılara AKTARMAK</td>
                         </tr>
                         <tr>
                             <th scope="row">5</th>
-                            <td>Mesaj göndermek</td>
+                            <td style="font-size: 50px;">CSS</td>
                         </tr>
                         <tr>
                             <th scope="row">6</th>
-                            <td>Kullanıcıları ekrana yazdırtmak, bunları giriş çıkışını id'sini kontrol etmek</td>
+                            <td>Mesaj göndermek</td>
                         </tr>
                         <tr>
                             <th scope="row">7</th>
-                            <td>canvas!</td>
+                            <td>Kullanıcıları ekrana yazdırtmak, bunları giriş çıkışını id'sini kontrol etmek</td>
                         </tr>
                         <tr>
                             <th scope="row">8</th>
+                            <td>canvas!</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">9</th>
                             <td></td>
                         </tr>
                     </tbody>
@@ -167,78 +171,100 @@
             <!-- Sağ Taraf: Canvas ve Sohbet -->
             <div class="right-panel" style="width: 100%;">
                 <!-- Canvas (sağ üst köşe) -->
-                <div class="d-flex justify-content-center">
-                <div class="canvas-container mx-3">
-                    <canvas id="drawingCanvasPc" width="767" height="448"></canvas>
-                </div>
-                </div>
-        
-                <!-- Sohbet Alanı (sağ alt köşe) -->
-                <div class="MyCenter">
-                <div class="chat-container">
-                    <div class="row m-0" style="width: 100%;">
-                        
-                        <div id="chat-container-scor" class="col-3 pe-0"></div>
 
-                        <div id="chat-container-chats" class="col-9 p-0">
-                            <div class="row m-0" style="width: 100%;height: 100%;">
-                                <div id="mobil-menu-chat-change" class="col-12 px-0">
-                                    <div class="row mx-1">
-                                        <div class="col d-grid gap-2 p-0">
-                                            <button onclick="chatChange('tahmin-chat-box',this)" class="rounded-start btn-tahminAndSohbet secilen">Tahmin</button>
-                                        </div>
-                                        <div class="col d-grid gap-2 p-0">
-                                            <button onclick="chatChange('sohbet-chat-box',this)" class="rounded-end btn-tahminAndSohbet">Sohbet</button>
-                                        </div>
+                <div class="container">
+                    <div class="row d-flex" style="justify-content: center;">
+                        <div class="col-auto p-0">
+                            <div id="ResimPaletiContainer" class="container">
+                                <div class="row m-0">
+                                    <div class="col right-col">
+                                        <button></button>
+                                    </div>
+                                    <div class="col left-col">
+                                        <button></button>
                                     </div>
                                 </div>
-
-                                <div id="tahmin-chat-box" class="col-6 p-0 chats">
-                                    <div class="chat-box">
-                                        <div class="row h-100">
-                                            <div class="col-12">
-                                                <div class="chat-header">
-                                                    <i class="fa-solid fa-pencil"></i> Tahmin
-                                                </div>
-                                                <div id="send-messages" class="chat-messages">
-                                                    <!-- Sohbet mesajları burada olacak -->
-                                                </div>
-                                                <div class="chat-input">
-                                                    <input id="mySendMessage" type="text" class="mySendMessage" placeholder="Mesajınızı yazın...">
-                                                    <button onclick="SendMessage('mySendMessage','send-messages')" id="sendMessage">
-                                                        <i class="fas fa-paper-plane"></i>
-                                                    </button>
+                            </div>
+                        </div>      
+                        <div class="col-auto p-0">
+                            <div class="d-flex justify-content-center">
+                                <div class="canvas-container">
+                                    <canvas id="drawingCanvasPc" width="767" height="448"></canvas>
+                                </div>
+                            </div>            
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <!-- Sohbet Alanı (sağ alt köşe) -->
+                            <div class="MyCenter">
+                            <div class="chat-container">
+                                <div class="row m-0" style="width: 100%;">
+                                    
+                                    <div id="chat-container-scor" class="col-3 pe-0"></div>
+            
+                                    <div id="chat-container-chats" class="col-9 p-0">
+                                        <div class="row m-0" style="width: 100%;height: 100%;">
+                                            <div id="mobil-menu-chat-change" class="col-12 px-0">
+                                                <div class="row mx-1">
+                                                    <div class="col d-grid gap-2 p-0">
+                                                        <button onclick="chatChange('tahmin-chat-box',this)" class="rounded-start btn-tahminAndSohbet secilen">Tahmin</button>
+                                                    </div>
+                                                    <div class="col d-grid gap-2 p-0">
+                                                        <button onclick="chatChange('sohbet-chat-box',this)" class="rounded-end btn-tahminAndSohbet">Sohbet</button>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div id="sohbet-chat-box" class="col-6 p-0 chats">
-                                    <div class="chat-box">
-                                        <div class="row h-100">
-                                            <div class="col-12">
-                                                <div class="chat-header">
-                                                    <i class="fas fa-comments"></i> Sohbet
-                                                </div>
-                                                <div id="chat-messages" class="chat-messages">
-                                                    <!-- Sohbet mesajları burada olacak -->
-                                                </div>
-                                                <div class="chat-input">
-                                                    <input id="myMessage" type="text" class="myMessage" placeholder="Mesajınızı yazın...">
-                                                    <button onclick="SendMessage('myMessage','chat-messages')" id="sendMessage">
-                                                        <i class="fas fa-paper-plane"></i>
-                                                    </button>
+            
+                                            <div id="tahmin-chat-box" class="col-6 p-0 chats">
+                                                <div class="chat-box">
+                                                    <div class="row h-100">
+                                                        <div class="col-12">
+                                                            <div class="chat-header">
+                                                                <i class="fa-solid fa-pencil"></i> Tahmin
+                                                            </div>
+                                                            <div id="send-messages" class="chat-messages">
+                                                                <!-- Sohbet mesajları burada olacak -->
+                                                            </div>
+                                                            <div class="chat-input">
+                                                                <input id="mySendMessage" type="text" class="mySendMessage" placeholder="Mesajınızı yazın...">
+                                                                <button onclick="SendMessage('mySendMessage','send-messages')" id="sendMessage">
+                                                                    <i class="fas fa-paper-plane"></i>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
+            
+                                            <div id="sohbet-chat-box" class="col-6 p-0 chats">
+                                                <div class="chat-box">
+                                                    <div class="row h-100">
+                                                        <div class="col-12">
+                                                            <div class="chat-header">
+                                                                <i class="fas fa-comments"></i> Sohbet
+                                                            </div>
+                                                            <div id="chat-messages" class="chat-messages">
+                                                                <!-- Sohbet mesajları burada olacak -->
+                                                            </div>
+                                                            <div class="chat-input">
+                                                                <input id="myMessage" type="text" class="myMessage" placeholder="Mesajınızı yazın...">
+                                                                <button onclick="SendMessage('myMessage','chat-messages')" id="sendMessage">
+                                                                    <i class="fas fa-paper-plane"></i>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
                                         </div>
                                     </div>
                                 </div>
-                                
+                            </div>
                             </div>
                         </div>
                     </div>
-                </div>
                 </div>
             </div>
         </div>

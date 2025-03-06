@@ -248,16 +248,16 @@ input[type="file"] {
     color: rgb(35, 145, 145);
 }
 #NameColor7{
-    color: rgb(145, 145, 145);
+    color: rgb(187, 98, 98);
 }
 #NameColor8{
-    color: rgb(35, 35, 35);
+    color: rgb(67, 77, 181);
 }
 #NameColor9{
-    color: rgb(84, 166, 163);
+    color: rgb(187, 0, 84);
 }
 #NameColor10{
-    color: rgb(204, 9, 178);
+    color: rgb(194, 213, 49);
 }
 .ServerMessage{
     font-family: 'Arial', sans-serif; /* Alternatif bir font */
@@ -302,7 +302,32 @@ input[type="file"] {
     font-family: 'Arial', sans-serif;
     position: relative;
     padding: 10px 10px;
+    height: calc(100vh - var(--header-height));
+    overflow-y: auto;
 }
+
+/* Scrollbar Genel Ayarlar */
+.scoreboard::-webkit-scrollbar {
+    width: 6px !important; /* Kaydırma çubuğu genişliği */
+}
+
+/* Scrollbar Track (Arka plan) */
+.scoreboard::-webkit-scrollbar-track {
+    background: #2e2e2e !important; /* Kaydırma arkaplan rengi */
+    border-radius: 10px !important;
+}
+
+/* Scrollbar Thumb (Kaydırma çubuğu) */
+.scoreboard::-webkit-scrollbar-thumb {
+    background: #454545 !important; /* Kaydırma çubuğu rengi */
+    border-radius: 10px !important;
+}
+
+/* Scrollbar üzerine gelince renk değişimi */
+.scoreboard::-webkit-scrollbar-thumb:hover {
+    background: #555 !important;
+}
+
 
 .scoreboard.dark-mode{
     background-color: #222;
@@ -396,6 +421,69 @@ input[type="file"] {
     --canvas-height: 448px;
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+#ResimPaletiContainer{
+    background-color: #535353;
+    padding: 10px;
+    border-radius: 8px;
+    width: 100%;
+    height: 100%;
+}
+#ResimPaletiContainer button{
+    background-color: #9d9d9d;
+    text-align: center;
+    box-shadow: #000;
+    border-radius: 8px;
+    width: 40px;
+    height: 40px;
+    border: 0;
+}
+
+#ResimPaletiContainer button {
+    font-size: 45px;
+    text-transform: uppercase;
+    border: 2px solid rgb(211, 211, 211);
+    color: aliceblue;
+    font-family: 'Russo One', sans-serif;
+    background-color: rgb(89, 89, 89);
+    box-shadow: 2px 5px 0px 0 rgb(125, 125, 125);
+    cursor: pointer;
+    transition: padding 0.3s, background-color 0.3s, box-shadow 0.3s, width 0.2s, height 0.2s;
+}
+
+#ResimPaletiContainer button:hover {
+    background-color: rgb(12, 135, 135);
+    box-shadow: 2px 5px 0px 0 rgb(12, 125, 125);
+}
+
+#ResimPaletiContainer button:active {
+    background-color: rgb(26, 202, 202);
+    box-shadow: 2px 5px 0px 0 rgb(17, 182, 146);
+}
+
+#ResimPaletiContainer .right-col{
+    padding: 0px 5px 0px 0px !important;
+}
+#ResimPaletiContainer .left-col{
+    padding: 0px 0px 0px 5px !important;
+}
+
+
+
+
+
+
 /* Canvas Alanı */
 .canvas-container {
     display: flex;
@@ -416,6 +504,22 @@ input[type="file"] {
     background-color: #fff;
     border-radius: 10px;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /* Sohbet Alanı */
 .chat-container {
@@ -739,7 +843,7 @@ input[type="file"] {
 
 .scoreboard {
     width: 100%;
-    height: 100%;
+    height: calc(100vh - var(--header-height) - var(--canvas-height) - 19px);
 }
 
 #sohbet-chat-box{
@@ -820,7 +924,7 @@ input[type="file"] {
     
 .scoreboard{
     width: 100%;
-    height: 100%;
+    height: calc(100vh - var(--header-height) - var(--canvas-height) - 19px);
     padding: 0 !important;
 }
 
