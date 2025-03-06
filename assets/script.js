@@ -491,10 +491,12 @@ function NewUser(NewUserName) {
 
 // Sayfadan ayrılınca kullanıcıyı çıkart
 window.addEventListener("beforeunload", function () {
-  channel.trigger("client-user-left", {
-    name: escapeOutput($('#myName').val()),
-    id: MyId,
-  });
+  if (MyId != undefined) {
+    channel.trigger("client-user-left", {
+      name: escapeOutput($('#myName').val()),
+      id: MyId,
+    });
+  }
 });
 
 
@@ -533,9 +535,6 @@ function scorBoardRefresh() {
   }
   
 }
-
-
-
 
 
 
@@ -596,8 +595,9 @@ function showWarning(message) {
 
 
 
-//tahmin ve sohbet değiştirmek için kod
 
+
+//tahmin ve sohbet değiştirmek için kod
 function chatChange(chatName,button) {
   $('.btn-tahminAndSohbet').removeClass('secilen');
   button.classList.add('secilen');
