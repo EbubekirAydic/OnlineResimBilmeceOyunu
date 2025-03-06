@@ -172,16 +172,54 @@
             <div class="right-panel" style="width: 100%;">
                 <!-- Canvas (sağ üst köşe) -->
 
-                <div class="container">
+                <div id="ResimContainer" class="container">
                     <div class="row d-flex" style="justify-content: center;">
                         <div class="col-auto p-0">
                             <div id="ResimPaletiContainer" class="container">
-                                <div class="row m-0">
+                                <div class="row m-0 mb-2">
                                     <div class="col right-col">
-                                        <button></button>
+                                        <button><i class="fa-solid fa-pencil"></i></button>
                                     </div>
                                     <div class="col left-col">
-                                        <button></button>
+                                        <button><i class="fa-solid fa-slash"></i></button>
+                                    </div>
+                                </div>
+                                <div class="row m-0 mb-2">
+                                    <div class="col right-col">
+                                        <button><i class="fa-regular fa-square-full"></i></button>
+                                    </div>
+                                    <div class="col left-col">
+                                        <button><i class="fa-solid fa-square-full"></i></button>
+                                    </div>
+                                </div>
+                                <div class="row m-0 mb-2">
+                                    <div class="col right-col">
+                                        <button><i class="fa-regular fa-circle"></i></button>
+                                    </div>
+                                    <div class="col left-col">
+                                        <button><i class="fa-solid fa-circle"></i></button>
+                                    </div>
+                                </div>
+                                <div class="row m-0 mb-2">
+                                    <div class="col right-col">
+                                        <button><i class="fa-solid fa-eraser"></i></button>
+                                    </div>
+                                    <div class="col left-col">
+                                        <input id="colorPicker" value="#000000" type="color"></input> <!--Diyelimki yeşil seçildi-->
+                                    </div>
+                                </div>
+                                <div class="row m-0 mb-2">
+                                    <div class="col">
+                                        <label for="thicknessRange">✏️ Kalınlık</label>
+                                        <input type="range" id="thicknessRange" min="1" max="10" value="3">
+                                    </div>
+                                </div>
+                                <div class="row m-0 mb-2">
+                                    <div class="col right-col">
+                                        <button><i class="fa-solid fa-reply"></i></button>
+                                    </div>
+                                    <div class="col left-col">
+                                        <button><i class="fa-solid fa-share"></i></button>
                                     </div>
                                 </div>
                             </div>
@@ -194,8 +232,7 @@
                             </div>            
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col">
+                </div>
                             <!-- Sohbet Alanı (sağ alt köşe) -->
                             <div class="MyCenter">
                             <div class="chat-container">
@@ -221,7 +258,7 @@
                                                     <div class="row h-100">
                                                         <div class="col-12">
                                                             <div class="chat-header">
-                                                                <i class="fa-solid fa-pencil"></i> Tahmin
+                                                                <i class="fa-regular fa-lightbulb"></i> Tahmin
                                                             </div>
                                                             <div id="send-messages" class="chat-messages">
                                                                 <!-- Sohbet mesajları burada olacak -->
@@ -242,7 +279,7 @@
                                                     <div class="row h-100">
                                                         <div class="col-12">
                                                             <div class="chat-header">
-                                                                <i class="fas fa-comments"></i> Sohbet
+                                                                <i class="fa-regular fa-comments"></i> Sohbet
                                                             </div>
                                                             <div id="chat-messages" class="chat-messages">
                                                                 <!-- Sohbet mesajları burada olacak -->
@@ -263,8 +300,6 @@
                                 </div>
                             </div>
                             </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>

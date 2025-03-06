@@ -131,7 +131,7 @@ channel.bind("client-Is-there-anyone", (data) => {
           console.log('Kullanıcılar:');
           console.log(Kullanicilar);
           
-          SendMessage('mySendMessage', 'send-messages', true, `Sunucuya <b id='NameColor${Kullanicilar.length}'  style='font-size: 14px;'>${data.name}</b> katıldı!`);
+          SendMessage('mySendMessage', 'send-messages', true, `<p style='color:green;margin:0;'><i class="fa-solid fa-door-open"></i> Sunucuya <b style='font-size: 14px;'>${data.name}</b> katıldı!</p>`);
 
           console.log(Kullanicilar.length);
 
@@ -236,6 +236,32 @@ channel.bind("client-user-left", (data) => {
   console.log('?--------client-user-left--------?');
   console.log('Kullanıcı çıktı:');
   console.log(data);
+
+  if (data.id == 1) {
+    console.log('Host çıktı');
+    // Kullanıcıların id'lerini yeniden düzenle
+    Kullanicilar = Kullanicilar.filter((user) => user.name !== data.name);
+
+    Kullanicilar.forEach((user, index) => {
+      user.id = index + 1;
+    });
+    
+    console.log(Kullanicilar[0],' Host oldu');
+
+    if (MyId == 2) {
+      channel.trigger("client-user", {
+        KullanicilarM: Kullanicilar,
+      });
+
+      MyId = 1;
+
+      SendMessage('mySendMessage', 'send-messages', true, `<p style='color:red;margin:0;'><i class="fa-solid fa-plug-circle-xmark"></i> <b style='font-size: 14px;'>${data.name}</b>(Yönetici) bağlantısı gitti! Yeni yönetici: <b style='font-size: 14px;'>${Kullanicilar[0].name}</b></p>`);
+    }
+
+    scorBoardRefresh();
+
+    return;
+  }
   
   if (Kullanicilar[0] && $('#myName').val()) {
     if (Kullanicilar[0].name == $('#myName').val()) {
@@ -250,7 +276,7 @@ channel.bind("client-user-left", (data) => {
         user.id = index + 1;
       });
 
-      SendMessage('mySendMessage', 'send-messages', true, `<b id='NameColor${data.id}'  style='font-size: 14px;'>${data.name}</b> <b style='color: red; font-size: 14px;'>sunucudan ayrıldı!</b>`);
+      SendMessage('mySendMessage', 'send-messages', true, `<p style='color:red;margin:0;'><i class="fa-solid fa-plug-circle-xmark"></i> <b style='font-size: 14px;'>${data.name}</b> bağlantısı gitti!</p>`);
 
       console.log('Yeni Kullanıcılar:');
       console.log(Kullanicilar);
@@ -787,6 +813,31 @@ async function uploadImage(previeW) {
 
 
 
+//RESİM PALETİ
+
+//Renk güncellemesi
+$('#colorPicker').on('change', function updateColor() {
+  console.log($(this).val());
+  this.style.backgroundColor = $(this).val();
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 const canvas1 = document.getElementById("drawingCanvasPc");
@@ -840,7 +891,6 @@ function stopDrawing(e) {
 
 // Çizim yapılırken
 function draw(e) {
-  console.log(getMousePos(e));
 
   if (!isDrawing) return;
   e.preventDefault();

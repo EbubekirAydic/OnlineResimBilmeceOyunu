@@ -431,6 +431,11 @@ input[type="file"] {
 
 
 
+#ResimContainer{
+    margin: 0;
+    max-width: 100%;
+    width: 100% !important;
+}
 
 
 #ResimPaletiContainer{
@@ -439,37 +444,59 @@ input[type="file"] {
     border-radius: 8px;
     width: 100%;
     height: 100%;
-}
-#ResimPaletiContainer button{
-    background-color: #9d9d9d;
-    text-align: center;
-    box-shadow: #000;
-    border-radius: 8px;
-    width: 40px;
-    height: 40px;
-    border: 0;
+    border-start-end-radius: 0px;
+    border-bottom-right-radius: 0px;
+    box-shadow: 2px 4px 0px 0 rgb(207, 207, 207);
 }
 
-#ResimPaletiContainer button {
-    font-size: 45px;
-    text-transform: uppercase;
-    border: 2px solid rgb(211, 211, 211);
-    color: aliceblue;
-    font-family: 'Russo One', sans-serif;
-    background-color: rgb(89, 89, 89);
-    box-shadow: 2px 5px 0px 0 rgb(125, 125, 125);
+#ResimPaletiContainer button{
     cursor: pointer;
-    transition: padding 0.3s, background-color 0.3s, box-shadow 0.3s, width 0.2s, height 0.2s;
+    text-align: center;
+    background-color: rgb(89, 89, 89);
+    box-shadow: 2px 4px 0px 0 rgb(125, 125, 125);
+    border: 2px solid rgb(152, 152, 152);
+    border-radius: 8px;
+    width: 50px;
+    height: 50px;
+    font-size: 25px;
+    color: rgb(205, 205, 205);
+    transition: padding 0.06s, background-color 0.06s, box-shadow 0.06s, width 0.06s, height 0.06s, transform 0.06s linear;
 }
 
 #ResimPaletiContainer button:hover {
-    background-color: rgb(12, 135, 135);
-    box-shadow: 2px 5px 0px 0 rgb(12, 125, 125);
+    background-color: rgb(125, 125, 125);
+    box-shadow: 2px 5px 0px 0 rgb(125, 125, 125);
 }
 
 #ResimPaletiContainer button:active {
-    background-color: rgb(26, 202, 202);
-    box-shadow: 2px 5px 0px 0 rgb(17, 182, 146);
+    background-color: rgb(165, 165, 165);
+    transform: translate(2px, 3px);
+    box-shadow: 0px 2px 0px 0 rgb(171, 171, 171);
+}
+
+#ResimPaletiContainer #colorPicker{
+    cursor: pointer;
+    text-align: center;
+    background-color: rgb(89, 89, 89);
+    box-shadow: 2px 4px 0px 0 rgb(125, 125, 125);
+    border: 2px solid rgb(152, 152, 152);
+    border-radius: 8px;
+    width: 50px;
+    height: 50px;
+    font-size: 25px;
+    color: rgb(205, 205, 205);
+    transition: padding 0.06s, background-color 0.06s, box-shadow 0.06s, width 0.06s, height 0.06s, transform 0.06s linear;
+}
+
+#ResimPaletiContainer #colorPicker:hover {
+    background-color: rgb(125, 125, 125);
+    box-shadow: 2px 5px 0px 0 rgb(125, 125, 125);
+}
+
+#ResimPaletiContainer #colorPicker:active {
+    background-color: rgb(165, 165, 165);
+    transform: translate(2px, 3px);
+    box-shadow: 0px 2px 0px 0 rgb(171, 171, 171);
 }
 
 #ResimPaletiContainer .right-col{
@@ -484,14 +511,18 @@ input[type="file"] {
 
 
 
+
+
+
 /* Canvas Alanı */
 .canvas-container {
     display: flex;
     justify-content: center;
     align-items: center;
     background-color: #ffffff;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-start-end-radius: 10px;
+    border-bottom-right-radius: 10px;
+    box-shadow: 2px 4px 0px 0 rgb(207, 207, 207);
 
     width: var(--canvas-width) !important;
     height: var(--canvas-height) !important;
@@ -593,7 +624,7 @@ input[type="file"] {
 }
 
 .message {
-    margin-bottom: 10px;
+    margin-top: 10px;
     width: 100%;
     display: inline-flex;
 }
@@ -615,6 +646,19 @@ input[type="file"] {
     border-radius: 50%;
     text-align: center;
     font-size: 14px;
+    position: relative;
+}
+.user-icon::before {
+    content: " ";
+    height: 0;
+    position: absolute;
+    width: 0;
+    z-index: 1;
+    left: 30px;
+    top: 0;
+    border: medium solid #333;
+    border-width: 0px 12px 12px 0;
+    border-color: transparent #333 transparent transparent;
 }
 
 .user-icon.dark-mode {
@@ -639,9 +683,10 @@ input[type="file"] {
     padding-top: 0px;
     padding-bottom: 6px;
 
-    margin-left: 5px;
+    margin-left: 10px;
 
     border-radius: 5px;
+    border-top-left-radius: 0;
     color: white;
     font-size: 14px;
     max-width: calc(100% - 40px);
