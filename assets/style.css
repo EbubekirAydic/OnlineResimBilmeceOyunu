@@ -527,6 +527,32 @@ input[type="file"] {
     width: var(--canvas-width) !important;
     height: var(--canvas-height) !important;
     overflow: hidden;
+
+    flex-direction: column-reverse;
+    color: #222;
+    font-family: 'Angkor';
+    
+    font-family: "Playwrite IT Moderna", cursive;
+    font-optical-sizing: auto;
+    font-weight: 800;
+    font-style: normal;
+    font-size: 1em;
+}
+
+.canvas-container div{
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+}
+.canvas-container div button{
+    margin: 10px;
+    width: 150px;
+    height: 150px;
+}
+
+.canvas-container p{
+    margin-top: 25px;
+    margin-bottom: 0px;
 }
 
 #drawingCanvasPc {
@@ -634,6 +660,22 @@ input[type="file"] {
     height: 100%;
 }
 
+.message .user-icon {
+    position: relative;
+}
+.message .user-icon::before {
+    content: " ";
+    height: 0;
+    position: absolute;
+    width: 0;
+    z-index: 1;
+    left: 30px;
+    top: 0;
+    border: medium solid #333;
+    border-width: 0px 12px 12px 0;
+    border-color: transparent #333 transparent transparent;
+}
+
 .user-icon {
     background-color: #ddd;
     display: inline-flex;
@@ -646,19 +688,6 @@ input[type="file"] {
     border-radius: 50%;
     text-align: center;
     font-size: 14px;
-    position: relative;
-}
-.user-icon::before {
-    content: " ";
-    height: 0;
-    position: absolute;
-    width: 0;
-    z-index: 1;
-    left: 30px;
-    top: 0;
-    border: medium solid #333;
-    border-width: 0px 12px 12px 0;
-    border-color: transparent #333 transparent transparent;
 }
 
 .user-icon.dark-mode {

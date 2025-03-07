@@ -227,6 +227,7 @@ channel.bind("client-user", (data) => {
 
   
   scorBoardRefresh();
+  StartGamingEvresi1();
 });
   
 
@@ -476,12 +477,14 @@ function NewUser(NewUserName) {
 
   scorBoardRefresh();
       
+  StartGamingEvresi1();
   //--------------------------------------------------------------------------------
   //eğer sunucuda biri varsa kendi bilgilerini gönder ve hostluktan çık
   channel.trigger("client-Is-there-anyone", {
     name: NewUserName,
     img: preview ? imageUrl: null,
   });
+
 }
 
 
@@ -831,6 +834,43 @@ $('#colorPicker').on('change', function updateColor() {
 
 
 
+function StartGamingEvresi1() {
+  if (MyId == 1) {
+    const HostMessege = document.createElement('p');
+    document.getElementById('canvas-container').prepend(HostMessege);
+    HostMessege.id = 'HostMassege';
+    HostMessege.innerHTML = 'Tema Ne olsun?';
+
+    const HostDiv = document.createElement('div');
+    document.getElementById('canvas-container').prepend(HostDiv);
+    HostDiv.id = 'HostDiv';
+    HostDiv.innerHTML = `
+    <button><i class="fa-solid fa-slash"></i></button>
+    <button><i class="fa-solid fa-slash"></i></button>
+    <button><i class="fa-solid fa-slash"></i></button>`;
+
+
+  }else{
+    const HostNotMessege = document.createElement('p');
+    document.getElementById('canvas-container').prepend(HostNotMessege);
+    HostNotMessege.id = 'NotHostMassege';
+    HostNotMessege.innerHTML = 'Yöneticinin oyunu başlatması bekleniyor';
+
+    const Html = $('#NotHostMassege').html();
+    $('#NotHostMassege').html(Html);
+    setTimeout(() => $('#NotHostMassege').html(Html+'.'), 500);
+    setTimeout(() => $('#NotHostMassege').html(Html+'..'), 1000);
+    setTimeout(() => $('#NotHostMassege').html(Html+'...'), 1500);
+    
+    setInterval(() => {
+      $('#NotHostMassege').html(Html);
+      setTimeout(() => $('#NotHostMassege').html(Html+'.'), 500);
+      setTimeout(() => $('#NotHostMassege').html(Html+'..'), 1000);
+      setTimeout(() => $('#NotHostMassege').html(Html+'...'), 1500);
+    }, 2000);
+  
+  }
+}
 
 
 
@@ -839,6 +879,15 @@ $('#colorPicker').on('change', function updateColor() {
 
 
 
+
+
+
+
+
+
+
+
+let Idraw = false;
 
 const canvas1 = document.getElementById("drawingCanvasPc");
 const ctx1 = canvas1.getContext("2d");
@@ -863,20 +912,22 @@ function sendDrawingData(drawing) {
 
 // Çizim başladığında
 function startDrawing(e) {
-  e.preventDefault();
-  isDrawing = true;
-  currentDrawing = [];
-
-  const pos = getMousePos(e);
-  if (!pos) {
-    stopDrawing(e);
-    return;
+  if (Idraw) {
+    e.preventDefault();
+    isDrawing = true;
+    currentDrawing = [];
+  
+    const pos = getMousePos(e);
+    if (!pos) {
+      stopDrawing(e);
+      return;
+    }
+  
+    currentDrawing.push({ x: pos.x, y: pos.y, type: "start" });
+  
+    ctx1.beginPath();
+    ctx1.moveTo(pos.x, pos.y);
   }
-
-  currentDrawing.push({ x: pos.x, y: pos.y, type: "start" });
-
-  ctx1.beginPath();
-  ctx1.moveTo(pos.x, pos.y);
 }
 
 // Çizim durduğunda
