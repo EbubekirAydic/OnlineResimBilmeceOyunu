@@ -17,8 +17,8 @@
     <title>Online Resim Oyunu</title>
 </head>
 <body>
-    
-    
+
+
 
     <!-- başlık -->
      <header>
@@ -179,7 +179,26 @@
                         <div class="col-auto p-0">
                             <div class="d-flex justify-content-center">
                                 <div id="canvas-container" class="canvas-container">
-                                    <canvas id="drawingCanvasPc" style="display: none;" width="767" height="448"></canvas>
+                                    <div id="HostDivMega" class="HostDivMega HostDivMegaMenus">
+                                        <p id="HostMassege">Tema Ne olsun?</p>
+                                        <div id="HostDiv" class="CanvasMenus">
+                                            <div>
+                                                <h1>Genel</h1>
+                                                <button class='Temalar' onclick='ButtonsActiv(this,"Temalar","active",false)'><i class="fa-solid fa-mountain-sun"></i></button>
+                                            </div>
+                                            <div>
+                                                <h1>Minecraft</h1>
+                                                <button class='Temalar' onclick='ButtonsActiv(this,"Temalar","active",false)'><img src='assets/Img/MinecraftIcon.webp'></button>
+                                            </div>
+                                            <div>
+                                                <h1>Hayvanlar</h1>
+                                                <button class='Temalar' onclick='ButtonsActiv(this,"Temalar","active",false)'><i class="fa-solid fa-paw"></i></button>
+                                            </div>
+                                        </div>
+                                        <button id="PlayButtonHost" onclick="ButtonsActiv(document.getElementById('drawingCanvasPc'),'HostDivMegaMenus','close',true)">Oyunu Başlat</button>
+                                    </div>
+                                    
+                                    <canvas id="drawingCanvasPc" class="HostDivMegaMenus" width="767" height="448"></canvas>
                                 </div>
                             </div>            
                         </div>

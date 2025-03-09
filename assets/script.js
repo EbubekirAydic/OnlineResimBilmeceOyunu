@@ -835,24 +835,14 @@ $('#colorPicker').on('change', function updateColor() {
 
 
 function StartGamingEvresi1() {
+
   if (MyId == 1) {
-    const HostMessege = document.createElement('p');
-    document.getElementById('canvas-container').prepend(HostMessege);
-    HostMessege.id = 'HostMassege';
-    HostMessege.innerHTML = 'Tema Ne olsun?';
 
-    const HostDiv = document.createElement('div');
-    document.getElementById('canvas-container').prepend(HostDiv);
-    HostDiv.id = 'HostDiv';
-    HostDiv.innerHTML = `
-    <button><i class="fa-solid fa-slash"></i></button>
-    <button><i class="fa-solid fa-slash"></i></button>
-    <button><i class="fa-solid fa-slash"></i></button>`;
-
+    ButtonsActiv(document.getElementById('HostDivMega'),'HostDivMegaMenus','close',true);
 
   }else{
     const HostNotMessege = document.createElement('p');
-    document.getElementById('canvas-container').prepend(HostNotMessege);
+    document.getElementById('canvas-container').append(HostNotMessege);
     HostNotMessege.id = 'NotHostMassege';
     HostNotMessege.innerHTML = 'Yöneticinin oyunu başlatması bekleniyor';
 
@@ -871,6 +861,24 @@ function StartGamingEvresi1() {
   
   }
 }
+
+function ButtonsActiv(button,buttonClass,AddClass,RemoveOrAdd) {
+  console.log(button);
+  console.log(buttonClass);
+  console.log(document.getElementsByClassName(buttonClass));
+
+  if (RemoveOrAdd) {
+    $(`.${buttonClass}`).addClass(AddClass);
+  
+    button.classList.remove(AddClass);
+  }else{
+    $(`.${buttonClass}`).removeClass(AddClass);
+  
+    button.classList.add(AddClass);
+  }
+}
+
+
 
 
 
@@ -912,7 +920,7 @@ function sendDrawingData(drawing) {
 
 // Çizim başladığında
 function startDrawing(e) {
-  if (Idraw) {
+  if (!Idraw) {
     e.preventDefault();
     isDrawing = true;
     currentDrawing = [];
