@@ -13,12 +13,24 @@
     
     <link rel="stylesheet" href="assets/style.css">
     
-    <link rel="icon" href="assets/Img/Ekran görüntüsü 2024-12-07 142609.png" type="image/x-icon">
+    <link rel="icon" href="assets/Img/ResmiTahminEt/Ekran görüntüsü 2024-12-07 142609.png" type="image/x-icon">
     <title>Online Resim Oyunu</title>
 </head>
 <body>
 
+    <!--SESLER-->
+    <audio id="JoinTheGameS" src="assets/audios/ResmiTahminEt/JoinTheGame.MP3"></audio>
+    <audio id="LeftTheGameS" src="assets/audios/ResmiTahminEt/LeftTheGame.mp3"></audio>
+    
+    <audio id="SecimSirasiSendeS" src="assets/audios/ResmiTahminEt/SecimSirasiSende.mp3"></audio>
+    <audio id="WordSelectS" src="assets/audios/ResmiTahminEt/WordSelect.mp3"></audio>
 
+    <audio id="button-click1S" src="assets/audios/ResmiTahminEt/button-click1.mp3"></audio>
+
+    <audio id="correctS" src="assets/audios/ResmiTahminEt/Correct Answer.mp3"></audio>
+    <audio id="wrongS" src="assets/audios/ResmiTahminEt/Worng Answer.mp3"></audio>
+
+    <audio id="AllCorrect" src="assets/audios/ResmiTahminEt/AllCorrect.mp3"></audio>
 
     <!-- başlık -->
      <header>
@@ -70,7 +82,7 @@
 
         <div class="row my-2">
             <div class="col d-grid gap-2">
-                <button onclick="NameControl()" type="text" id="OynaButton" class="btn btn-success">Oyna</button>
+                <button onclick="NameControl()" type="text" id="OynaButton" class="btn btn-success NotSound">Oyna</button>
             </div>
         </div>
     </div>
@@ -175,10 +187,16 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>      
+                        </div>
                         <div class="col-auto p-0">
                             <div class="d-flex justify-content-center">
                                 <div id="canvas-container" class="canvas-container">
+
+                                    <div id="WaitMassege" class="WaitMassegeS HostDivMegaMenus">
+                                        <img class="emoji" src='assets/Img/ResmiTahminEt/OyunYüklenme.gif'>
+                                        <p id="WaitMassegeP">Sunucu Aranıyor</p>
+                                    </div>
+
                                     <div id="HostDivMega" class="HostDivMega HostDivMegaMenus">
                                         <p id="HostMassege">Tema Ne olsun?</p>
                                         <div id="HostDiv" class="CanvasMenus">
@@ -188,20 +206,67 @@
                                             </div>
                                             <div>
                                                 <h1>Minecraft</h1>
-                                                <button class='Temalar' onclick='ButtonsActiv(this,"Temalar","active",false)'><img src='assets/Img/MinecraftIcon.webp'></button>
+                                                <button class='Temalar' onclick='ButtonsActiv(this,"Temalar","active",false)'><img src='assets/Img/ResmiTahminEt/MinecraftIcon.webp'></button>
                                             </div>
                                             <div>
                                                 <h1>Hayvanlar</h1>
                                                 <button class='Temalar' onclick='ButtonsActiv(this,"Temalar","active",false)'><i class="fa-solid fa-paw"></i></button>
                                             </div>
                                         </div>
-                                        <button id="PlayButtonHost" onclick="ButtonsActiv(document.getElementById('drawingCanvasPc'),'HostDivMegaMenus','close',true)">Oyunu Başlat</button>
+                                        <button id="PlayButtonHost" class="NotSound" onclick="KelimeView()">Oyunu Başlat</button>
                                     </div>
-                                    
-                                    <canvas id="drawingCanvasPc" class="HostDivMegaMenus" width="767" height="448"></canvas>
+                                    <div id="ResimSelecter" class="HostDivMega HostDivMegaMenus">
+                                        <h1 id="HostMassege" style="margin-top: 25px;"><b>Çizim sırası sende!</b></h1>
+                                        <p id="HostMassege" style="margin: 0;">Çizeceğin resmi seç</p>
+
+                                        <div id="HostDiv" class="CanvasMenus">
+                                            <div>
+                                                <h1 class="DrawH1">Kunduz</h1>
+                                                <button class='DrawBtn NotSound' onclick='SelectKelime(this);'><i class="fa-solid fa-pencil NotSound"></i> çiz</button>
+                                            </div>
+                                            <div class="vertical-line"></div>
+                                            <div>
+                                                <h1 class="DrawH1">Zürafa</h1>
+                                                <button class='DrawBtn NotSound' onclick='SelectKelime(this);'><i class="fa-solid fa-pencil"></i> çiz</button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div id="NotHostMassege" class="WaitMassegeS HostDivMegaMenus">
+                                        <img class="emoji" src='assets/Img/ResmiTahminEt/YoneticiBekleme.gif'>
+                                        <p id="NotHostMassegeP">Yöneticinin oyunu başlatması bekleniyor</p>
+                                    </div>
+
+                                    <div id="ArtistLeftTheGame" class="WaitMassegeS HostDivMegaMenus">
+                                        <img class="emoji" src='assets/Img/ResmiTahminEt/ArtistLeftTheGame.gif'>
+                                        <p id="ArtistLeftMassege">Berat oyundan çıktı. Sırasını kaybetti</p>
+                                    </div>
+
+                                    <div id="drawingCanvas" class="HostDivMegaMenus">
+                                        <div id="SelectWordView">
+                                            <p style="margin: 0;">Kelime</p>
+                                        </div>
+                                        <canvas id="drawingCanvasPc" width="767" height="448"></canvas>
+                                    </div>
+
+                                    <div id="GameEndAllCorrect" class="HostDivMegaMenus WaitMassege2">
+                                        <img class="emoji" src='assets/Img/ResmiTahminEt/HerkesDogruBildi.gif'>
+                                        <p id="WaitMassegeP">Herkes doğru bildi!</p>
+                                    </div>
+
+                                    <div id="GameEndTimeFinish" class="HostDivMegaMenus WaitMassege2">
+                                        <img class="emoji" src='assets/Img/ResmiTahminEt/HerkesDogruBildi.gif'>
+                                        <p id="WaitMassegeP">Süre bitti! Cevap : </p>
+                                    </div>
+
+                                    <div id="Art" class="HostDivMegaMenus WaitMassege2">
+                                        <img class="emoji" src='assets/Img/ResmiTahminEt/KelimeSeciliyor.gif'>
+                                        <p id="ArtistMassege">Çizim Sırası beratta</p>
+                                    </div>
                                 </div>
                             </div>            
                         </div>
+                        <div id="TimeBarr"></div>
                     </div>
                 </div>
                             <!-- Sohbet Alanı (sağ alt köşe) -->
@@ -216,10 +281,10 @@
                                             <div id="mobil-menu-chat-change" class="col-12 px-0">
                                                 <div class="row mx-1">
                                                     <div class="col d-grid gap-2 p-0">
-                                                        <button onclick="chatChange('tahmin-chat-box',this)" class="rounded-start btn-tahminAndSohbet secilen">Tahmin</button>
+                                                        <button onclick="chatChange('tahmin-chat-box',this)" class="rounded-start btn-tahminAndSohbet secilen NotSound">Tahmin</button>
                                                     </div>
                                                     <div class="col d-grid gap-2 p-0">
-                                                        <button onclick="chatChange('sohbet-chat-box',this)" class="rounded-end btn-tahminAndSohbet">Sohbet</button>
+                                                        <button onclick="chatChange('sohbet-chat-box',this)" class="rounded-end btn-tahminAndSohbet NotSound">Sohbet</button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -235,8 +300,8 @@
                                                                 <!-- Sohbet mesajları burada olacak -->
                                                             </div>
                                                             <div class="chat-input">
-                                                                <input id="mySendMessage" type="text" class="mySendMessage" placeholder="Mesajınızı yazın...">
-                                                                <button onclick="SendMessage('mySendMessage','send-messages')" id="sendMessage">
+                                                                <input id="mySendMessage" type="text" class="mySendMessage" placeholder="Çizim Başlamasını Bekleyin...">
+                                                                <button onclick="SendMessage('mySendMessage','send-messages')" id="sendMessage" class="NotSound">
                                                                     <i class="fas fa-paper-plane"></i>
                                                                 </button>
                                                             </div>
@@ -257,7 +322,7 @@
                                                             </div>
                                                             <div class="chat-input">
                                                                 <input id="myMessage" type="text" class="myMessage" placeholder="Mesajınızı yazın...">
-                                                                <button onclick="SendMessage('myMessage','chat-messages')" id="sendMessage">
+                                                                <button onclick="SendMessage('myMessage','chat-messages')" id="sendMessage" class="NotSound">
                                                                     <i class="fas fa-paper-plane"></i>
                                                                 </button>
                                                             </div>
@@ -270,7 +335,7 @@
                                     </div>
                                 </div>
                             </div>
-                            </div>
+                        </div>
                 </div>
             </div>
         </div>

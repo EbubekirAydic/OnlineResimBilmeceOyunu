@@ -595,14 +595,46 @@ input[type="file"] {
 }
 
 .canvas-container p{
-    font-size: 30px;
+    font-size: 25px;
     margin-top: 25px;
     margin-bottom: 0px;
+    user-select: none;
 }
 
 .canvas-container #HostDiv h1{
     margin: 0;
     font-size: 1.6rem;
+}
+
+#ResimSelecter #HostDiv button{
+    margin: 10px;
+    width: 100px;
+    height: 40px;
+    font-size: 1rem;
+    cursor: pointer;
+    background-color: #4CAF50; /* Yeşil tonları */
+    box-shadow: 2px 4px 0px 0 #388E3C;
+    border: 2px solid #2E7D32;
+    border-radius: 8px;
+    color: #FFFFFF; /* Beyaz yazı */
+    transition: padding 0.06s, background-color 0.06s, box-shadow 0.06s, width 0.06s, height 0.06s, transform 0.06s linear;
+}
+#ResimSelecter #HostDiv button:hover{
+    background-color: #45A049;
+    box-shadow: 2px 5px 0px 0 #388E3C;
+}
+
+#ResimSelecter #HostDiv button:active {
+    background-color: #388E3C;
+    transform: translate(2px, 3px);
+    box-shadow: 0px 2px 0px 0 #2E7D32;
+}
+
+.vertical-line {
+    border-left: 2px solid rgba(0, 0, 0, 0.463);
+    height: 100%;
+    margin-left: 50px;
+    margin-right: 50px;
 }
 
 .canvas-container #HostDiv button{
@@ -642,6 +674,29 @@ input[type="file"] {
     border-radius: 10px;
 }
 
+#drawingCanvas {
+    width: var(--canvas-width);
+    height: var(--canvas-height);
+    border-radius: 10px;
+}
+
+#SelectWordView {
+    position: absolute; 
+    top: 10px; 
+    left: 50%; 
+    transform: translateX(-50%);
+    background-color: rgba(203, 203, 203, 0.982); 
+    padding: 5px 10px;
+    border-radius: 5px;
+    z-index: 10;
+    pointer-events: none;
+    transition: opacity 0.3s; 
+}
+
+#SelectWordView:hover{
+    background-color: rgba(255, 255, 255, 0.7); 
+    opacity: 0;
+}
 
 
 
@@ -649,6 +704,36 @@ input[type="file"] {
 
 
 
+.WaitMassege2{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+
+.emoji{
+    width: 100px;
+}
+
+.WaitMassegeS{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.WaitMassegeS p{
+    margin-top: 0 !important;
+    margin-right: 10px !important;
+}
+
+
+#TimeBarr{
+    background-color: yellow;
+    width: 100%;
+    height: 5px;
+    display: list-item;
+    margin: 0;
+    padding: 0;
+}
 
 
 
@@ -830,6 +915,16 @@ input[type="file"] {
     color: white;
 }
 
+#mySendMessage{
+    background-color: rgba(35, 35, 35, 0.705);
+    pointer-events: none;
+}
+
+.activeSend{
+    background-color: #444 !important;
+    pointer-events: all !important;
+}
+
 .chat-input button {
     margin-top: 5px;
     background-color: #ffc107;
@@ -897,6 +992,11 @@ input[type="file"] {
 }
 
 @media screen and (max-width: 768px) and (min-width: 540px) {
+    
+    .emoji{
+        width: 100px;
+    }
+
     .player .col-9 .playerPuan{
         font-size: 12px;
     }
@@ -919,12 +1019,17 @@ input[type="file"] {
     border-radius: 50%;
 }
 
+@media screen and (max-width: 540px) and (min-width: 476px) {
+    .emoji{
+        width: 60px;
+    }
+    .canvas-container p{
+        font-size: 18px;
+    }
+}
+
 @media screen and (max-width: 540px) {
 
-
-    .canvas-container p{
-        font-size: 15px;
-    }
     
     .canvas-container #HostDiv h1{
         margin: 0;
@@ -1009,6 +1114,8 @@ input[type="file"] {
 }
 
 @media screen and (max-width: 370px){
+    
+
     .canvas-container #HostDiv h1{
         margin: 0;
         font-size: 1rem;
@@ -1029,7 +1136,6 @@ input[type="file"] {
 /* Responsive Tasarım */
 @media screen and (max-width: 768px) and (min-width: 426px) {
 
-    
     .chat-messages {
         /*width 100vw - soldaki score tablosunu çıkar*/
         width: calc(100vw - 25vw - 24px);
@@ -1086,6 +1192,10 @@ input[type="file"] {
         width: 100% !important;
         height: 100% !important;
     }
+    #drawingCanvas {
+        width: 100% !important;
+        height: 100% !important;
+    }
     
 .MyCenter{
     display:inline-flex;
@@ -1094,8 +1204,22 @@ input[type="file"] {
 
 }
 
+@media screen and (max-width: 476px) {
+
+    .emoji{
+        width: 40px;
+    }
+    .canvas-container p{
+        font-size: 14px;
+    }
+}
 /* Responsive Tasarım */
 @media screen and (max-width: 426px) {
+
+    .emoji{
+        width: 40px;
+    }
+
 
 /* Profil Resmi Gibi Görsel */
 .btn-tahminAndSohbet{
@@ -1172,6 +1296,10 @@ header {
     width: var(--canvas-width) !important;
     height: var(--canvas-height) !important;
 }
+#drawingCanvas {
+    width: var(--canvas-width) !important;
+    height: var(--canvas-height) !important;
+}
 
 }
 
@@ -1225,6 +1353,10 @@ body.dark-mode {
     }
 
     #drawingCanvasPc{
+        width: var(--canvas-width) !important;
+        height: var(--canvas-height) !important;
+    }
+    #drawingCanvas{
         width: var(--canvas-width) !important;
         height: var(--canvas-height) !important;
     }

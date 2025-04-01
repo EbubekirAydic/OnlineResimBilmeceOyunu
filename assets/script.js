@@ -1,9 +1,45 @@
+//Pusher
 let pusher; // Pusher nesnesi
+var channel;
+
+// Resim
 let preview; //Görsel önizleme
 let imageUrl; // Görsel URL'si
+
+//kullanıcı bilgileri
 let Kullanicilar = []; // Kullanıcılar dizisi
-var channel;
-let MyId;
+let MyId; //Benim id'm
+let pings = []; //5 saniyedir sunucuda olanların listesi
+
+// Tema kelime ve sıradaki
+let order = 1; //Çizim sırası kimdeyse onu bekleriz
+let SecilenKelime; //adı üstünde
+let Tema;
+
+let ArtTime = 30;
+
+//Puan
+let turPuan = 10; //Doğru cevap verme puanı
+let bilensayisi = 0; //Doğru cevap veren kişi sayısı
+let cevapVerebilenSayisi; //Cevap verebilen kişi sayısı
+
+const JoinTheGameSound = $('#JoinTheGameS')[0];
+const LeftTheGameSound = $('#LeftTheGameS')[0];
+
+const SecimSirasiSendeSound = $('#SecimSirasiSendeS')[0];
+const WordSelectSound = $('#WordSelectS')[0];
+
+const buttonClick1Sound = $('#button-click1S')[0];
+
+const correctSound = $('#correctS')[0];
+const wrongSound = $('#wrongS')[0];
+
+const AllCorrect = $('#AllCorrect')[0];
+
+//Rastgele sayı üretme fonksiyonu
+function getRndInteger(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
 
 // HTML'e eklenen metinleri güvenli hale getirmek için fonksiyon
 function escapeOutput(toOutput){
@@ -36,7 +72,7 @@ $(document).ready(function() {
 channel.bind("client-ChatMessage", (data) => {
     console.log('?-----client-ChatMessage------?');
 
-    console.log(data);
+    console.log('Gönderilen Mesaj: ',data);
 
     if (data.name == 'Server78901234567890') {
       message = data.message;
@@ -49,8 +85,6 @@ channel.bind("client-ChatMessage", (data) => {
     
     setupChatScroll(`#${messageDiv}`);
     mesajEkle(`#${messageDiv}`);
-        
-    console.error('Mesaj 3 gönderiliyor');
     $(`#${messageDiv}`).append(`
       <div class="message ${data.name == 'Server78901234567890' ? 'ServerMessage' : ''}">
           ${data.img == 'serverImg' ?
@@ -108,13 +142,12 @@ $('#mySendMessage').keydown(function(event) {
 //Birisi sunucuda var mı diye sor ve host varsa host onu kullanicilar'a eklesin
 //Oyunda biri yoksa zaten burası çalışmayacak
 channel.bind("client-Is-there-anyone", (data) => {
-  console.log('?-----client-Is-there-anyone------?');
+  console.log('?-----Biri Sunucuya Girdi------?');
 
   if (Kullanicilar[0] && $('#myName').val()) {
     if (Kullanicilar[0].name == $('#myName').val()) {
       console.log('--------Ben hostum--------');
-      console.log('Gelen kullanıcı:');
-      console.log(data);
+      console.log('Gelen kullanıcı: ',data);
 
       //Eğer aynı isimde başka bir kullanıcı varsa oyuna giremez
         if (Kullanicilar.find(user => user.name === data.name)) {
@@ -126,20 +159,19 @@ channel.bind("client-Is-there-anyone", (data) => {
           });
 
         }else{
-          Kullanicilar.push({name: data.name, img: data.img, id: Kullanicilar.length + 1});
+          Kullanicilar.push({name: data.name, img: data.img, id: Kullanicilar.length + 1, puan : 0});
 
-          console.log('Kullanıcılar:');
-          console.log(Kullanicilar);
+          console.log('Kullanıcılar: ',Kullanicilar);
           
-          SendMessage('mySendMessage', 'send-messages', true, `<p style='color:green;margin:0;'><i class="fa-solid fa-door-open"></i> Sunucuya <b style='font-size: 14px;'>${data.name}</b> katıldı!</p>`);
+          SendMessage('mySendMessage', 'chat-messages', true, `<p style='color:green;margin:0;'><i class="fa-solid fa-door-open"></i> Sunucuya <b style='font-size: 14px;'>${data.name}</b> katıldı!</p>`);
 
-          console.log(Kullanicilar.length);
+          pings.push({id :Kullanicilar.length});
 
           channel.trigger("client-user", {
             KullanicilarM: Kullanicilar,
           });
-
           
+          JoinTheGameSound.play(); // Sesi başlat
 
           scorBoardRefresh();
         }
@@ -218,7 +250,6 @@ channel.bind("client-user", (data) => {
 
 
     $.each(Kullanicilar, function(index, user) {
-      console.log(user.id);
 
       if (user.name == $('#myName').val()) {
       MyId = user.id;
@@ -227,16 +258,14 @@ channel.bind("client-user", (data) => {
 
   
   scorBoardRefresh();
-  StartGamingEvresi1();
 });
   
 
 
 //Kullanıcı siteden çıkarsa
 channel.bind("client-user-left", (data) => {
-  console.log('?--------client-user-left--------?');
-  console.log('Kullanıcı çıktı:');
-  console.log(data);
+  console.log('?--------Sunucudan Biri Çıktı--------?');
+  console.log('Şu Kullanıcı çıktı: ',data);
 
   if (data.id == 1) {
     console.log('Host çıktı');
@@ -256,19 +285,31 @@ channel.bind("client-user-left", (data) => {
 
       MyId = 1;
 
-      SendMessage('mySendMessage', 'send-messages', true, `<p style='color:red;margin:0;'><i class="fa-solid fa-plug-circle-xmark"></i> <b style='font-size: 14px;'>${data.name}</b>(Yönetici) bağlantısı gitti! Yeni yönetici: <b style='font-size: 14px;'>${Kullanicilar[0].name}</b></p>`);
+      SendMessage('mySendMessage', 'chat-messages', true, `<p style='color:red;margin:0;'><i class="fa-solid fa-plug-circle-xmark"></i> <b style='font-size: 14px;'>${data.name}</b>(Yönetici) bağlantısı gitti! Yeni yönetici: <b style='font-size: 14px;'>${Kullanicilar[0].name}</b></p>`);
     }
 
     scorBoardRefresh();
+    console.log(LeftTheGameSound);
+
+    if (order == data.id) {
+      if (data.id == 1) {
+        OyunBitirArtistLeftTheGame(data.name);
+      }else{
+        OyunBitirArtistLeftTheGame();
+      }
+    }else{
+      StartGamingEvresi1();
+    }
+    
+    LeftTheGameSound.play(); // Sesi başlat
 
     return;
   }
   
   if (Kullanicilar[0] && $('#myName').val()) {
     if (Kullanicilar[0].name == $('#myName').val()) {
-      console.log('Ben hostum!');
-      console.log('Eski Kullanıcılar:');
-      console.log(Kullanicilar);
+      console.log('------------Ben hostum!------------');
+      console.log('Eski Kullanıcılar: ',Kullanicilar);
 
       Kullanicilar = Kullanicilar.filter((user) => user.name !== data.name);
 
@@ -277,10 +318,9 @@ channel.bind("client-user-left", (data) => {
         user.id = index + 1;
       });
 
-      SendMessage('mySendMessage', 'send-messages', true, `<p style='color:red;margin:0;'><i class="fa-solid fa-plug-circle-xmark"></i> <b style='font-size: 14px;'>${data.name}</b> bağlantısı gitti!</p>`);
+      SendMessage('mySendMessage', 'chat-messages', true, `<p style='color:red;margin:0;'><i class="fa-solid fa-plug-circle-xmark"></i> <b style='font-size: 14px;'>${data.name}</b> bağlantısı gitti!</p>`);
 
-      console.log('Yeni Kullanıcılar:');
-      console.log(Kullanicilar);
+      console.log('Yeni Kullanıcılar: ',Kullanicilar);
 
       channel.trigger("client-user", {
         KullanicilarM: Kullanicilar,
@@ -293,14 +333,115 @@ channel.bind("client-user-left", (data) => {
   }
 
   scorBoardRefresh();
+    LeftTheGameSound.play();
   console.log('*---------------------------------*');
   console.warn('');
+});
+
+
+channel.bind("client-ping", (data) => {
+  if (Kullanicilar[0] && $('#myName').val()) {
+    if (Kullanicilar[0].name == $('#myName').val()) {
+      pings.push(data);
+    }
+  }
 });
 
 
 
 
 
+
+
+
+// Kelime seçildi
+channel.bind('client-WordSelect', function(data) {
+
+  SecilenKelime = data.Word;
+  order = data.order;
+  Tema = data.secilenTema;
+  bilensayisi = 0;
+  cevapVerebilenSayisi = Kullanicilar.length-1;
+  
+  $('#mySendMessage').addClass('activeSend');
+
+  $('#SelectWordView').html('');
+  ButtonsActiv(document.getElementById('drawingCanvas'),'HostDivMegaMenus','close',true);
+  
+  WordSelectSound.play(); // Sesi başlat
+});
+
+
+
+//Kullanıcı siteden çıkarsa
+channel.bind("client-paunSistem", (data) => {
+  console.log('?--------PuanEkle--------?');
+  
+  if (Kullanicilar[0] && $('#myName').val()) {
+      if (1 == MyId) {
+
+        let oo = true;
+        let oo2 = true;
+
+        console.log('Şu Kullanıcı: ',data.id,' +',turPuan);
+
+        Kullanicilar.forEach(user => {
+          if (data.id == user.id) {
+            if (oo) {
+              user.puan += turPuan;
+              console.log( bilensayisi);
+              bilensayisi += 1;
+              console.log( bilensayisi);
+              if (turPuan > 1) {
+                turPuan -= 1;
+              }
+              oo = false;
+            }
+          }
+        });
+
+        Kullanicilar.forEach(user => {
+          if (order == user.id) {
+            if (oo2) {
+              user.puan += 10;
+              oo2 = false;
+            }
+          }
+        });
+
+        //buraya puana gör listeyi sırala
+        Kullanicilar.sort((a, b) => b.puan - a.puan);
+
+        channel.trigger("client-user", {
+          KullanicilarM: Kullanicilar,
+        });
+
+        console.log(bilensayisi,'',cevapVerebilenSayisi)
+        if (bilensayisi == cevapVerebilenSayisi) {
+          OyunBitir();
+          order += 1;
+          channel.trigger("client-ArtFinish", {
+            KullanicilarM: Kullanicilar,
+          });
+        }
+
+      }else{
+        console.log('Ben host değilim!');
+      }
+    }else{
+      console.log('Ben oyunda değilim!');
+    }
+
+  scorBoardRefresh();
+  console.log('*---------------------------------*');
+  console.warn('');
+});
+
+
+channel.bind("client-ArtFinish", (data) => {
+  order += 1;
+  OyunBitir();
+})
 
 
 
@@ -356,6 +497,48 @@ function SendMessage(messageInput,messageDiv,IsServer,ServerMessage) {
   }else{
     if (!escapeOutput($(`#${messageInput}`).val()) == '') {
 
+      let backgroundColorTrueOrFalse = undefined;
+      let numberSecilenKelime = 0;
+
+      message = escapeOutput($(`#${messageInput}`).val());
+      name = escapeOutput($('#myName').val());
+
+      if (messageDiv == 'send-messages') {
+        if (SecilenKelime == message) {
+          trueMat(`<p style='color:green;margin:0;'><i class="fa-solid fa-check"></i> <b style='font-size: 14px;'>${name}</b> doğru bildi!</p>`,true);
+          $(`#${messageInput}`).val('');
+          return;
+        }else{
+
+
+          for (let i = 0; i < SecilenKelime.length; i++) {
+            const element = SecilenKelime[i];
+            
+            if(element == message[i]){
+              numberSecilenKelime += 1;
+            }
+          }
+
+          if (SecilenKelime.length - 1 == numberSecilenKelime) {
+            trueMat(`<p style='color:yellow;margin:0;'><i class="fa-solid fa-not-equal"></i> <b style='font-size: 14px;'>${name}</b> çok yaklaştın! cevabın : ${message}</p>`,false);
+            $(`#${messageInput}`).val('');
+            return;
+          }else if(SecilenKelime.length - 2 == numberSecilenKelime){
+            trueMat(`<p style='color:orange;margin:0;'><i class="fa-solid fa-not-equal"></i> <b style='font-size: 14px;'>${name}</b> yaklaştın! cevabın : ${message}</p>`,false);
+            $(`#${messageInput}`).val('');
+            return;
+          }else if(SecilenKelime.length - 3 == numberSecilenKelime){
+            trueMat(`<p style='color:red;margin:0;'><i class="fa-solid fa-not-equal"></i> <b style='font-size: 14px;'>${name}</b> yakın! cevabın : ${message}</p>`,false);
+            $(`#${messageInput}`).val('');
+            return;
+          }
+        }
+      }else{
+        if (SecilenKelime == message) {
+          return
+        }
+      }
+
       setupChatScroll(`#${messageDiv}`);
       mesajEkle(`#${messageDiv}`);
       
@@ -368,8 +551,6 @@ function SendMessage(messageInput,messageDiv,IsServer,ServerMessage) {
       });
 
       // Mesajı HTML'e ekle
-      name = escapeOutput($('#myName').val());
-      message = escapeOutput($(`#${messageInput}`).val());
       preview ? img = preview.src : img = null;
 
         
@@ -382,14 +563,117 @@ function SendMessage(messageInput,messageDiv,IsServer,ServerMessage) {
                         `<i class="fas fa-user"></i>`
                       }
                       </div>
-                      <div class="text"><b id='NameColor${MyId}' class='col-12'>${name}</b><div class='col-12'>${message}</div></div>
+                      <div class="text" style='${backgroundColorTrueOrFalse ? 'background-color:'+backgroundColorTrueOrFalse+';' : ''}'><b id='NameColor${MyId}' class='col-12'>${name}</b><div class='col-12'>${message}</div></div>
                   </div>
               `);
     }
-    $(`#${messageInput}`).val('')
+    $(`#${messageInput}`).val('');
   };
 
 }
+
+
+
+
+
+
+
+
+
+
+function trueMat(ServerMessage,trueOrFalse){
+  setupChatScroll(`#send-messages`);
+  mesajEkle(`#send-messages`);
+
+  if (trueOrFalse) {
+    channel.trigger("client-ChatMessage", {
+      name: 'Server78901234567890',
+      message: ServerMessage,
+      img: 'serverImg',
+      massageDiv: 'send-messages',
+    });
+
+    channel.trigger('client-paunSistem', {
+      id: MyId,
+    });
+    
+  if (Kullanicilar[0] && $('#myName').val()) {
+    if (1 == MyId) {
+
+      let oo = true;
+      let oo2 = true;
+
+      console.log('Şu Kullanıcı: ',1,' +',turPuan);
+
+      Kullanicilar.forEach(user => {
+        if (1 == user.id) {
+          if (oo) {
+            user.puan += turPuan;
+            console.log( bilensayisi);
+            bilensayisi += 1;
+            console.log( bilensayisi);
+            if (turPuan > 1) {
+              turPuan -= 1;
+            }
+            oo = false;
+          }
+        }
+      });
+
+      Kullanicilar.forEach(user => {
+        if (order == user.id) {
+          if (oo2) {
+            user.puan += 10;
+            oo2 = false;
+          }
+        }
+      });
+
+      //buraya puana gör listeyi sırala
+      Kullanicilar.sort((a, b) => b.puan - a.puan);
+
+      channel.trigger("client-user", {
+        KullanicilarM: Kullanicilar,
+      });
+
+      console.log(bilensayisi,'',cevapVerebilenSayisi)
+      if (bilensayisi == cevapVerebilenSayisi) {
+
+        OyunBitir();
+        order += 1;
+        if (order > Kullanicilar.length) {
+          order = 1;
+        }
+        channel.trigger("client-ArtFinish", {
+          KullanicilarM: Kullanicilar,
+        });
+      }
+
+    }else{
+      console.log('Ben host değilim!');
+    }
+  }else{
+    console.log('Ben oyunda değilim!');
+  }
+
+scorBoardRefresh();
+console.log('*---------------------------------*');
+console.warn('');
+
+    $('#mySendMessage').removeClass('activeSend').blur();
+
+    correctSound.play();
+  }else{
+    wrongSound.play();
+  }
+
+  $(`#send-messages`).append(`
+                <div class="message ServerMessage">
+                    <div class="text">${ServerMessage}</div>
+                </div>`);
+}
+
+
 
 
 
@@ -471,8 +755,10 @@ function NameControl() {
 
 
 function NewUser(NewUserName) {
+
+
   // Kendini host olarak tanıt
-  Kullanicilar.push({name: NewUserName, img: preview ? imageUrl: null, id: 1});
+  Kullanicilar.push({name: NewUserName, img: preview ? imageUrl: null, id: 1, puan : 0});
   MyId = 1;
 
   scorBoardRefresh();
@@ -485,6 +771,7 @@ function NewUser(NewUserName) {
     img: preview ? imageUrl: null,
   });
 
+  JoinTheGameSound.play(); // Sesi başlat
 }
 
 
@@ -493,16 +780,82 @@ function NewUser(NewUserName) {
 
 
 // Sayfadan ayrılınca kullanıcıyı çıkart
-window.addEventListener("beforeunload", function () {
-  if (MyId != undefined) {
+window.addEventListener("beforeunload", function (event) {
+  if (MyId !== undefined) {
     channel.trigger("client-user-left", {
-      name: escapeOutput($('#myName').val()),
-      id: MyId,
+      name: $('#myName').val().trim(),
+      id: MyId, 
     });
+    
+    console.log("Sayfadan ayrılma isteği gönderildi:", MyId); // Türkçe console.log
+  } else {
+    console.log("MyId tanımlı değil, ayrılma isteği gönderilmedi."); // Türkçe console.log
   }
 });
 
 
+// Kullanıcıya her 5 saniyede bir ping at
+/* setInterval(() => {
+  if (MyId !== undefined) {
+    pings.push({id : MyId});
+    channel.trigger("client-ping", { id: MyId });
+  }
+}, 5000); */
+
+/* setInterval(() => {
+  if (MyId == 1) {
+    console.log('--------Kullanıcı Testi--------');
+
+    
+    if (pings.length == 0) {return;}
+
+    Kullanicilar.forEach((kullanici, i) => {
+      
+
+
+      for (let a = 0; a < pings.length; a++) {
+
+        if (pings[a].id == kullanici.id || kullanici.id == 1) {
+          return;
+        }
+      }
+
+      console.log(Kullanicilar);
+
+      Kullanicilar = Kullanicilar.filter((user) => user.name !== kullanici.name);
+
+      // Kullanıcıların id'lerini yeniden düzenle
+      Kullanicilar.forEach((user, index) => {
+        user.id = index + 1;
+      });
+
+      SendMessage('mySendMessage', 'send-messages', true, `<p style='color:red;margin:0;'><i class="fa-solid fa-plug-circle-xmark"></i> <b style='font-size: 14px;'>${kullanici.name}</b> bağlantısı gitti!</p>`);
+
+
+      channel.trigger("client-user", {
+        KullanicilarM: Kullanicilar,
+      });
+
+      channel.trigger("client-user-left", {
+        name: kullanici.name,
+        id: kullanici.id, 
+      });
+
+      
+      scorBoardRefresh();
+
+
+      console.log(pings);
+      console.log(kullanici);
+      console.log(pings[a]);
+      console.log("Kullanıcı bağlantıyı kaybetti, çıkartılıyor. ", kullanici,' ' + kullanici.id);
+      
+      LeftTheGameSound.play(); // Sesi başlat
+    });
+  }
+
+  pings = [];
+}, 10000); */
 
 
 
@@ -530,13 +883,12 @@ function scorBoardRefresh() {
             </div>
         </div>
         <div class="col-9 ${Theme}">
-          <div class="playerPuan ${Theme}"><p><b id='NameColor${user.id}'>${user.name}</b></p><p id='Puan' class='${Theme}'>Puan: <span class='${Theme}'>0</span></p></div>
+          <div class="playerPuan ${Theme}"><p><b id='NameColor${user.id}'>${user.name}</b></p><p id='Puan' class='${Theme}'>Puan: <span class='${Theme}'>${user.puan}</span></p></div>
         </div>
       </div>
       `);
     });
   }
-  
 }
 
 
@@ -835,38 +1187,36 @@ $('#colorPicker').on('change', function updateColor() {
 
 
 function StartGamingEvresi1() {
+  ButtonsActiv(document.getElementById('WaitMassege'),'HostDivMegaMenus','close',true);
 
+  const Html = 'Sunucu Aranıyor';
+  $('#WaitMassegeP').html(Html);
+  setTimeout(() => $('#WaitMassegeP').html(Html+'.'), 500);
+  setTimeout(() => $('#WaitMassegeP').html(Html+'..'), 1000);
+  setTimeout(() => $('#WaitMassegeP').html(Html+'...'), 1500);
+
+  setTimeout(function(){
   if (MyId == 1) {
-
     ButtonsActiv(document.getElementById('HostDivMega'),'HostDivMegaMenus','close',true);
 
   }else{
-    const HostNotMessege = document.createElement('p');
-    document.getElementById('canvas-container').append(HostNotMessege);
-    HostNotMessege.id = 'NotHostMassege';
-    HostNotMessege.innerHTML = 'Yöneticinin oyunu başlatması bekleniyor';
 
-    const Html = $('#NotHostMassege').html();
-    $('#NotHostMassege').html(Html);
-    setTimeout(() => $('#NotHostMassege').html(Html+'.'), 500);
-    setTimeout(() => $('#NotHostMassege').html(Html+'..'), 1000);
-    setTimeout(() => $('#NotHostMassege').html(Html+'...'), 1500);
-    
-    setInterval(() => {
-      $('#NotHostMassege').html(Html);
-      setTimeout(() => $('#NotHostMassege').html(Html+'.'), 500);
-      setTimeout(() => $('#NotHostMassege').html(Html+'..'), 1000);
-      setTimeout(() => $('#NotHostMassege').html(Html+'...'), 1500);
-    }, 2000);
+    ButtonsActiv(document.getElementById('NotHostMassege'),'HostDivMegaMenus','close',true);
+
+    const notHostMessage = 'Yöneticinin oyunu başlatması bekleniyor';
+    const updateMessage = () => {
+      $('#NotHostMassegeP').html(notHostMessage);
+      setTimeout(() => $('#NotHostMassegeP').html(notHostMessage + '.'), 500);
+      setTimeout(() => $('#NotHostMassegeP').html(notHostMessage + '..'), 1000);
+      setTimeout(() => $('#NotHostMassegeP').html(notHostMessage + '...'), 1500);
+    };
+    updateMessage();
+    setInterval(updateMessage, 2000);
   
-  }
+  }}, 2000);
 }
 
 function ButtonsActiv(button,buttonClass,AddClass,RemoveOrAdd) {
-  console.log(button);
-  console.log(buttonClass);
-  console.log(document.getElementsByClassName(buttonClass));
-
   if (RemoveOrAdd) {
     $(`.${buttonClass}`).addClass(AddClass);
   
@@ -879,6 +1229,99 @@ function ButtonsActiv(button,buttonClass,AddClass,RemoveOrAdd) {
 }
 
 
+
+
+
+function KelimeView(){
+
+  $('#mySendMessage').removeClass('activeSend').blur();
+
+  if (1 == MyId) {
+    if (document.getElementsByClassName('active') && document.getElementsByClassName('active')[0]) {
+      const buton = document.getElementsByClassName('active');
+      console.log(document.getElementsByClassName('active'), document.getElementsByClassName('active')[0])
+      Tema = buton[0].parentNode.children[0].innerHTML;
+    }
+  }
+
+  ButtonsActiv(document.getElementById('ResimSelecter'),'HostDivMegaMenus','close',true);
+
+  
+
+  let Viewkelime1 = kelimeler[Tema][getRndInteger(0, kelimeler[Tema].length - 1)];
+  let Viewkelime2 = kelimeler[Tema][getRndInteger(0, kelimeler[Tema].length - 1)];
+
+  $('.DrawH1').eq(0).html(Viewkelime1);
+  $('.DrawH1').eq(1).html(Viewkelime2);
+  SecimSirasiSendeSound.play(); // Sesi başlat
+}
+
+function SelectKelime(SelectedWord){
+  SecilenKelime = SelectedWord.parentNode.children[0].innerHTML
+  
+  $('#SelectWordView').html(SecilenKelime);
+  ButtonsActiv(document.getElementById('drawingCanvas'),'HostDivMegaMenus','close',true);
+
+  if (Kullanicilar.length < order) {
+    order = 1;
+  }
+  WordSelectSound.play(); // Sesi başlat
+
+  bilensayisi = 0;
+
+  cevapVerebilenSayisi = Kullanicilar.length-1;
+
+  channel.trigger("client-WordSelect", {
+    Word: SecilenKelime,
+    order: order,
+    secilenTema: Tema,
+  });
+
+  
+}
+
+
+
+
+
+function OyunBitir(){
+
+  AllCorrect.play();
+
+  ButtonsActiv(document.getElementById('GameEndAllCorrect'),'HostDivMegaMenus','close',true);
+  setTimeout(() => {
+    if (order == MyId) {
+      KelimeView()
+    }else{
+      ButtonsActiv(document.getElementById('Art'),'HostDivMegaMenus','close',true);
+      $('#ArtistMassege').html(Kullanicilar[order-1].name+' kelime seçiyor');
+    }
+  }, 3000);
+}
+
+
+
+function OyunBitirArtistLeftTheGame(hostName){
+  let user;
+  if (hostName) {
+    user = hostName;
+  }else{
+    user = Kullanicilar[order].name;
+  }
+
+
+  ButtonsActiv(document.getElementById('ArtistLeftTheGame'),'HostDivMegaMenus','close',true);
+  $('#ArtistLeftMassege').html(user+' oyundan çıktı. Sırasını kaybetti');
+  
+  setTimeout(() => {
+    if (order == MyId) {
+      KelimeView();
+    }else{
+      ButtonsActiv(document.getElementById('Art'),'HostDivMegaMenus','close',true);
+      $('#ArtistMassege').html(Kullanicilar[order].name+' kelime seçiyor');
+    }
+  }, 3000);
+}
 
 
 
@@ -920,6 +1363,10 @@ function sendDrawingData(drawing) {
 
 // Çizim başladığında
 function startDrawing(e) {
+  
+  console.log(order,' ',MyId,' ',order == MyId);
+  if (order != MyId) return;
+
   if (!Idraw) {
     e.preventDefault();
     isDrawing = true;
@@ -1001,3 +1448,30 @@ canvas1.addEventListener("mousemove", draw);
 canvas1.addEventListener("touchstart", startDrawing);
 canvas1.addEventListener("touchend", stopDrawing);
 canvas1.addEventListener("touchmove", draw);
+
+
+
+
+
+//Tahmin kısmı
+function tahmindeBulunma() {
+  
+}
+
+
+
+
+
+
+
+
+
+//SES KISMI
+
+document.querySelectorAll("button").forEach(button => {
+  button.addEventListener("click", () => {
+    if (button.classList.contains('NotSound')) {return;}
+
+      buttonClick1Sound.play(); // Sesi başlat
+  });
+});
