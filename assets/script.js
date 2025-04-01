@@ -16,7 +16,7 @@ let order = 1; //Çizim sırası kimdeyse onu bekleriz
 let SecilenKelime; //adı üstünde
 let Tema;
 
-let ArtTime = 30;
+let ArtTime = 60;
 
 //Puan
 let turPuan = 10; //Doğru cevap verme puanı
@@ -357,6 +357,21 @@ channel.bind("client-ping", (data) => {
 // Kelime seçildi
 channel.bind('client-WordSelect', function(data) {
 
+  const timerInterval = setInterval(() => {
+    if (remainingTime > 0) {
+      console.log(`Remaining time: ${remainingTime} seconds`);
+      $(`#TimeBarr`).css('width', `${(remainingTime / ArtTime) * 100}%`);
+      $(`#TimeBarr`).attr('aria-valuenow', remainingTime);
+      remainingTime -= 0.1;
+    } else {
+      $(`#TimeBarr`).css('width', `0%`);
+      OyunBitir();
+      clearInterval(timerInterval);
+      console.log("Time's up!");
+      // Trigger any necessary actions when the timer ends
+    }
+  }, 100);
+
   SecilenKelime = data.Word;
   order = data.order;
   Tema = data.secilenTema;
@@ -439,7 +454,12 @@ channel.bind("client-paunSistem", (data) => {
 
 
 channel.bind("client-ArtFinish", (data) => {
+  Kullanicilar = data.KullanicilarM;
+
   order += 1;
+  if (order > Kullanicilar.length) {
+    order = 1;
+  }
   OyunBitir();
 })
 
@@ -1262,6 +1282,25 @@ function SelectKelime(SelectedWord){
   $('#SelectWordView').html(SecilenKelime);
   ButtonsActiv(document.getElementById('drawingCanvas'),'HostDivMegaMenus','close',true);
 
+  // Start the timer for the drawing phase
+  let remainingTime = ArtTime; // ArtTime is the duration of the timer
+
+  const timerInterval = setInterval(() => {
+    if (remainingTime > 0) {
+      console.log(`Remaining time: ${remainingTime} seconds`);
+      $(`#TimeBarr`).css('width', `${(remainingTime / ArtTime) * 100}%`);
+      $(`#TimeBarr`).attr('aria-valuenow', remainingTime);
+      remainingTime -= 0.1;
+    } else {
+      $(`#TimeBarr`).css('width', `0%`);
+      OyunBitir();
+      clearInterval(timerInterval);
+      console.log("Time's up!");
+      // Trigger any necessary actions when the timer ends
+    }
+  }, 100);
+  
+
   if (Kullanicilar.length < order) {
     order = 1;
   }
@@ -1288,13 +1327,29 @@ function OyunBitir(){
 
   AllCorrect.play();
 
+  // Çizim alanını temizle
+  clearCanvas();
+
   ButtonsActiv(document.getElementById('GameEndAllCorrect'),'HostDivMegaMenus','close',true);
   setTimeout(() => {
     if (order == MyId) {
       KelimeView()
     }else{
       ButtonsActiv(document.getElementById('Art'),'HostDivMegaMenus','close',true);
-      $('#ArtistMassege').html(Kullanicilar[order-1].name+' kelime seçiyor');
+      if (!$('ArtistMassege')) {
+        console.error('ArtistMassege bulunamadı!');
+      }
+      if (!Kullanicilar[order-1]) {
+        console.error('Kullanıcı bulunamadı! Kullanıcı: ', Kullanicilar[order-1], 'Order-1: ', order-1, 'Kullanıcılar: ', Kullanicilar, 'MyId: ', MyId, 'order: ', order);
+      }
+      if (!Kullanicilar[order-1].name) {
+        console.error('Kullanıcı ismi bulunamadı! Kullanıcı: ', Kullanicilar[order-1], 'Order-1: ', order-1, 'Kullanıcılar: ', Kullanicilar, 'MyId: ', MyId, 'order: ', order, 'Kullanıcılar[order-1].name: ', Kullanicilar[order-1].name);
+      }
+      if (!Kullanicilar) {
+        console.error('Kullanıcılar bulunamadı! Kullanıcı: ', Kullanicilar[order-1], 'Order-1: ', order-1, 'Kullanıcılar: ', Kullanicilar, 'MyId: ', MyId, 'order: ', order, 'Kullanıcılar[order-1].name: ', Kullanicilar[order-1].name);
+      }
+      console.log('Kullanıcılar bulunamadı! Kullanıcı: ', Kullanicilar[order-1], 'Order-1: ', order-1, 'Kullanıcılar: ', Kullanicilar, 'MyId: ', MyId, 'order: ', order, 'Kullanıcılar[order-1].name: ', Kullanicilar[order-1].name);
+      $('#ArtistMassege').html(Kullanicilar.find(user => user.id === order).name+' kelime seçiyor');
     }
   }, 3000);
 }
@@ -1309,6 +1364,8 @@ function OyunBitirArtistLeftTheGame(hostName){
     user = Kullanicilar[order].name;
   }
 
+  // Çizim alanını temizle
+  clearCanvas();
 
   ButtonsActiv(document.getElementById('ArtistLeftTheGame'),'HostDivMegaMenus','close',true);
   $('#ArtistLeftMassege').html(user+' oyundan çıktı. Sırasını kaybetti');
@@ -1449,15 +1506,9 @@ canvas1.addEventListener("touchstart", startDrawing);
 canvas1.addEventListener("touchend", stopDrawing);
 canvas1.addEventListener("touchmove", draw);
 
-
-
-
-
-//Tahmin kısmı
-function tahmindeBulunma() {
-  
+function clearCanvas() {
+  ctx1.clearRect(0, 0, canvas1.width, canvas1.height);
 }
-
 
 
 
