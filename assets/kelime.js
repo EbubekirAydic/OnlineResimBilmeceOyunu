@@ -33,7 +33,7 @@ const kelimeler = {
             "kiraz", "vişne", "kivi", "portakal", "mandalina", "limon", "nar", "şeftali", "kayısı", "erik",
             "havuç", "marul", "lahana", "ıspanak", "patates", "soğan", "sarımsak", "biber", "domates", "salatalık",
             "karnabahar", "mantar", "zeytin", "peynir", "yoğurt", "süt", "tereyağı", "ekmek", "pirinç", "makarna",
-            "mercimek", "nohut", "fasulye", "bulgur", "şeker", "tuz", "baharat", "tarçın", "karabiber", "kimyon"
+            "nohut", "fasulye", "bulgur", "şeker", "tuz", "baharat", "tarçın", "karabiber", "kimyon"
         ]
     };
     
