@@ -16,7 +16,7 @@ let order = 1; //Çizim sırası kimdeyse onu bekleriz
 let SecilenKelime; //adı üstünde
 let Tema;
 
-let ArtTime = 60;
+// ! let ArtTime = 60; */
 
 //Puan
 let turPuan = 10; //Doğru cevap verme puanı
@@ -357,7 +357,8 @@ channel.bind("client-ping", (data) => {
 // Kelime seçildi
 channel.bind('client-WordSelect', function(data) {
 
-  const timerInterval = setInterval(() => {
+// ! Kelime seçildiğinde yapılacak işlemler buraya gelecek */
+/*  const timerInterval = setInterval(() => {
     if (remainingTime > 0) {
       console.log(`Remaining time: ${remainingTime} seconds`);
       $(`#TimeBarr`).css('width', `${(remainingTime / ArtTime) * 100}%`);
@@ -370,7 +371,7 @@ channel.bind('client-WordSelect', function(data) {
       console.log("Time's up!");
       // Trigger any necessary actions when the timer ends
     }
-  }, 100);
+  }, 100); */
 
   SecilenKelime = data.Word;
   order = data.order;
@@ -524,7 +525,7 @@ function SendMessage(messageInput,messageDiv,IsServer,ServerMessage) {
       name = escapeOutput($('#myName').val());
 
       if (messageDiv == 'send-messages') {
-        if (SecilenKelime == message) {
+        if (SecilenKelime == message.toLowerCase()) {
           trueMat(`<p style='color:green;margin:0;'><i class="fa-solid fa-check"></i> <b style='font-size: 14px;'>${name}</b> doğru bildi!</p>`,true);
           $(`#${messageInput}`).val('');
           return;
@@ -554,7 +555,7 @@ function SendMessage(messageInput,messageDiv,IsServer,ServerMessage) {
           }
         }
       }else{
-        if (SecilenKelime == message) {
+        if (SecilenKelime == message.toLowerCase()) {
           return
         }
       }
@@ -1283,7 +1284,9 @@ function SelectKelime(SelectedWord){
   ButtonsActiv(document.getElementById('drawingCanvas'),'HostDivMegaMenus','close',true);
 
   // Start the timer for the drawing phase
-  let remainingTime = ArtTime; // ArtTime is the duration of the timer
+  
+// ! Kelime seçildiğinde yapılacak işlemler buraya gelecek */
+/*   let remainingTime = ArtTime; // ArtTime is the duration of the timer
 
   const timerInterval = setInterval(() => {
     if (remainingTime > 0) {
@@ -1298,7 +1301,7 @@ function SelectKelime(SelectedWord){
       console.log("Time's up!");
       // Trigger any necessary actions when the timer ends
     }
-  }, 100);
+  }, 100); */
   
 
   if (Kullanicilar.length < order) {
